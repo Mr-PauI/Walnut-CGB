@@ -1359,17 +1359,19 @@ IRAM_ATTR void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 	case 0x0:
 	case 0x1:
 		/* Set RAM enable bit. MBC2 is handled in fall-through. */
-		if(gb->mbc > 0 && gb->mbc != 2 && gb->cart_ram)
+		if (gb->mbc > 0 && gb->mbc != 2)
 		{
-			gb->enable_cart_ram = ((val & 0x0F) == 0x0A);
+			if (gb->cart_ram)
+				gb->enable_cart_ram = ((val & 0x0F) == 0x0A);
 			return;
 		}
 
-	/* Intentional fall through. */
+		/* Intentional fall through. */
 	case 0x2:
-		if(gb->mbc == 5)
+		if (gb->mbc == 5)
 		{
-			gb->selected_rom_bank = (gb->selected_rom_bank & 0x100) | val;
+			gb->selected_rom_bank =
+				(gb->selected_rom_bank & 0x100) | val;
 			gb->selected_rom_bank =
 				gb->selected_rom_bank & gb->num_rom_banks_mask;
 #if WALNUT_GB_SAFE_DUALFETCH_MBC
@@ -9464,3 +9466,4 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
+
