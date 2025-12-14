@@ -1,3 +1,8 @@
+Note: I am still prepping the release of Walnut-CGB, below though you can get some expectations.
+The implementation was able to significantly increase execution speed in Gameboy Enhanced Firmware,
+it also has room for further enhancements but I am currently focused on the Game Station emulator
+optimizations.
+
 # Walnut-CGB
 
 Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of
