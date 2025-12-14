@@ -1,7 +1,7 @@
-Note: I am still prepping the release of Walnut-CGB, below though you can get some expectations.
-The implementation was able to significantly increase execution speed in Gameboy Enhanced Firmware,
-it also has room for further enhancements but I am currently focused on the Game Station emulator
-optimizations.
+Note: I havent yet updated the examples, however with minimal adjustments they can be made to work with Walnut-CGB.
+It is mostly a drop in replacement with the only difference being the need to pass read 16-bit and read 32-bit functions
+to the initialization function. Otherwise it functions like Peanut-GB if the flags are set the same way. Walnut-CGB
+has CGB support on by default.
 
 # Walnut-CGB
 
