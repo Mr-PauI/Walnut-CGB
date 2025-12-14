@@ -33,7 +33,6 @@ It includes all DMG updates from its main branch as well as the CGB support fork
 - The LCD rendering is performed line by line, so certain animations will not
   render properly (such as in Prehistorik Man).
 - Some games may not be playable due to emulation inaccuracy
-  (see https://github.com/deltabeard/Peanut-GB/issues/31).
 - MiniGB APU runs in a separate thread, and so the timing is not accurate. If
   accurate APU timing and emulation is required, then Blargg's Gb_Snd_Emu
   library (or an alternative) can be used instead.
