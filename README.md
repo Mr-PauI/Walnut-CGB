@@ -7,16 +7,14 @@ optimizations.
 
 Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of
 [Peanut-GB](https://github.com/deltabeard/Peanut-GB). This is a full reimplementation of the core
-to support native 16-bit operations and processing instructions with a dual-fetch chained
-rchitecture. A significant deviation from the more portable 8-bit Pennut-GB imlpementation.
+to support native 16-bit and 32-bit operations and processing instructions with a dual-fetch chained
+architecture. A significant deviation from the more portable 8-bit Pennut-GB imlpementation.
 It includes all DMG updates from its main branch as well as the CGB support fork integrated into it.
 
 ## Features
 
 - Game Boy (DMG) Support
 - Game Boy Color (CGB) Support
-- Very fast; fast enough to run on a RP2040 ARM Cortex M0+ microcontroller at
-  full speed.
 - MBC1, MBC2, MBC3, MBC30 and MBC5 support
 - Real Time Clock (RTC) support
 - Serial connection support
@@ -103,6 +101,7 @@ These functions are set when calling gb_init.
 
 - gb_rom_read
 - gb_rom_read_16bit
+- gb_rom_read_32bit
 - gb_cart_ram_read
 - gb_cart_ram_write
 - gb_error
