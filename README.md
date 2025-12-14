@@ -5,10 +5,10 @@ optimizations.
 
 # Walnut-CGB
 
-Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of
-[Peanut-GB](https://github.com/deltabeard/Peanut-GB). This is a full reimplementation of the core
+Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of the more
+portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB). This is a full reimplementation of the core
 to support native 16-bit and 32-bit operations and processing instructions with a dual-fetch chained
-architecture. A significant deviation from the more portable 8-bit Pennut-GB imlpementation.
+architecture. A significant deviation from the Pennut-GB imlpementation.
 It includes all DMG updates from its main branch as well as the CGB support fork integrated into it.
 
 ## Features
@@ -180,7 +180,7 @@ Deprecated: do not use. The RTC is ticked internally.
 Execute a bootrom image on reset. A reset must be performed after calling
 gb_set_bootrom for these changes to take effect. This is because gb_init calls
 gb_reset, but gb_set_bootrom must be called after gb_init.
-The bootrom must be either a DMG or a MGB bootrom.
+The bootrom must be either a CGB, DMG or a MGB bootrom.
 
 ## License
 
