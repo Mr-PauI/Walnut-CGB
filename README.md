@@ -1,5 +1,5 @@
 Note: I havent yet updated the examples, however with minimal adjustments they can be made to work with Walnut-CGB.
-It is mostly a drop in replacement with the only difference being the need to pass read 16-bit and read 32-bit functions
+It is mostly a drop in replacement with the only API differences being the need to pass read 16-bit and read 32-bit functions
 to the initialization function. Otherwise it functions like Peanut-GB if the flags are set the same way. Walnut-CGB
 has CGB support on by default. Unlike Peanut-GB's CGB branch, Walnut-CGB produces RGB565 output for gameboy color games.
 
@@ -7,8 +7,8 @@ has CGB support on by default. Unlike Peanut-GB's CGB branch, Walnut-CGB produce
 
 Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of the more
 portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB). This is a full reimplementation of the core
-to support native 16-bit and 32-bit operations and processing instructions with a dual-fetch chained
-architecture. A significant deviation from the Peanut-GB cpu opcode dispatch imlpementation.
+to support native 16-bit and 32-bit operations and processing instructions with a [dual-fetch chained
+architecture](https://github.com/Mr-PauI/Walnut-CGB/wiki/CPU-opcode-dispatch-model). A significant deviation from the Peanut-GB cpu opcode dispatch imlpementation.
 It includes all DMG updates from its main branch as well as the CGB support fork integrated into it.
 
 ## Features
