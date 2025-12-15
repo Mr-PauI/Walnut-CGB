@@ -2,6 +2,7 @@ Note: I havent yet updated the examples, however with minimal adjustments they c
 It is mostly a drop in replacement with the only API differences being the need to pass read 16-bit and read 32-bit functions
 to the initialization function. Otherwise it functions like Peanut-GB if the flags are set the same way. Walnut-CGB
 has CGB support on by default. Unlike Peanut-GB's CGB branch, Walnut-CGB produces RGB565 output for gameboy color games.
+The [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki) section has more information about implementation specifics.
 
 # Walnut-CGB
 
