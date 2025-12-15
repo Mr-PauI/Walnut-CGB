@@ -6,15 +6,13 @@ Important: To use the new dual-fetch CPU execution model, calls to gb_run_frame(
   
 Walnut-CGB enables CGB support by default. Unlike Peanut-GB’s CGB branch, Walnut-CGB outputs RGB565 for Game Boy Color games.  
   
-The wiki contains further details on implementation specifics, execution models, and framebuffer handling.  
-The [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki) section has more information about implementation specifics.  
+The [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki) contains further details on implementation specifics, execution models, and framebuffer handling.   
+  
+# Walnut-CGB  
+  
+Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of the more portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB).
+This is a full reimplementation of the core to support native 16-bit and 32-bit operationsand processing instructions with a [dual-fetch chained architecture](https://github.com/Mr-PauI/Walnut-CGB/wiki/CPU-opcode-dispatch-model). A significant deviation from the Peanut-GB cpu opcode dispatch imlpementation.
 
-# Walnut-CGB
-
-Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of the more
-portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB). This is a full reimplementation of the core
-to support native 16-bit and 32-bit operations and processing instructions with a [dual-fetch chained
-architecture](https://github.com/Mr-PauI/Walnut-CGB/wiki/CPU-opcode-dispatch-model). A significant deviation from the Peanut-GB cpu opcode dispatch imlpementation.
 It includes all DMG updates from its main branch as well as the CGB support fork integrated into it.
 
 ## Features
