@@ -106,9 +106,11 @@ These functions are set when calling gb_init.
 - gb_error
 
 ### Core Functions
-Both of these are ways to execute cycles for one frame, and can be swapped at runtime to examine differences:
-gb_run_frame (uses the original PeanutGB opcode dispatch method to allow use of either core, however this will still make use of 16-bit or 32-bit dma if those flags are set so disabling those flags is required for a true Peanut-GB behaviour)
-gb_run_frame_dualfetch (uses the 16-bit dual-fetch architecture)
+
+Both of these are ways to execute cycles for one frame, and can be swapped at runtime to examine differences:  
+gb_run_frame (uses the original PeanutGB opcode dispatch method to allow use of either core, however this will still make use of 16-bit or 32-bit dma if those flags are set so disabling those flags is required for a true Peanut-GB behaviour)  
+gb_run_frame_dualfetch (uses the 16-bit dual-fetch architecture)  
+
 
 ### Optional Functions
 
