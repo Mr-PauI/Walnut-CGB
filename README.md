@@ -108,8 +108,8 @@ These functions are set when calling gb_init.
 ### Core Functions
 
 Both of these are ways to execute cycles for one frame, and can be swapped at runtime to examine differences:  
-gb_run_frame (uses the original PeanutGB opcode dispatch method to allow use of either core, however this will still make use of 16-bit or 32-bit dma if those flags are set so disabling those flags is required for a true Peanut-GB behaviour)  
-gb_run_frame_dualfetch (uses the 16-bit dual-fetch architecture)  
+[gb_run_frame](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_run_frame) (original 8-bit single instruction dispatch)
+gb_run_frame_dualfetch (uses the new 16-bit dual-fetch architecture)  
 
 
 ### Optional Functions
