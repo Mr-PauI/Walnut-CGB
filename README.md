@@ -1,7 +1,9 @@
 Note: I havent yet updated the examples, however with minimal adjustments they can be made to work with Walnut-CGB.
 It is mostly a drop in replacement with the only API differences being the need to pass read 16-bit and read 32-bit functions
 to the initialization function. Otherwise it functions like Peanut-GB if the flags are set the same way. Walnut-CGB
-has CGB support on by default. Unlike Peanut-GB's CGB branch, Walnut-CGB produces RGB565 output for gameboy color games.
+has CGB support on by default. Unlike Peanut-GB's CGB branch, Walnut-CGB produces RGB565 output for gameboy color games. In
+addition to use the new cpu model the function gb_run_frame() must be changed to gb_run_frame_dualfetch() otherwise the
+original 8-bit code is used(with whatever DMA options were turned on, but otherwise the original Peanut-GB core)
 The [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki) section has more information about implementation specifics.
 
 # Walnut-CGB
