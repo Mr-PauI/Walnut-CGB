@@ -109,7 +109,7 @@ These functions are set when calling gb_init.
 
 The following optional functions may be defined for further functionality.
 
-#### lcd_draw_line
+#### [lcd_draw_line](https://github.com/Mr-PauI/Walnut-CGB/wiki/lcd_draw_line-example-%7C-Rendering-the-frame-for-DMG-and-CGB)
 
 This function is required for LCD drawing. Set this function using gb_init_lcd
 and enable LCD functionality within Walnut-CGB by defining ENABLE_LCD to 1 before
