@@ -638,12 +638,7 @@ union cart_rtc
  */
 struct gb_s
 {
-  // MrPauls additions for tighter integration/optimization of drawing routines
-  // unused for now, hope is to integrate drawing right into the framebuffer
-  u_int16_t* fb565; // frame buffer for argb565 image
-  u_int16_t* palette565; // pointer to a 4-12 colour palette
-  bool  use12colors;
-  bool COMPATIBILITY_MODE;
+
 #if (WALNUT_GB_SAFE_DUALFETCH_DMA || WALNUT_GB_SAFE_DUALFETCH_MBC)
 	bool prefetch_invalid;
 #endif
@@ -9466,4 +9461,5 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
+
 
