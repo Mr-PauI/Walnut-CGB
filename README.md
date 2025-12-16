@@ -154,7 +154,7 @@ though no link cable is connected.
 
 These functions are provided by Walnut-CGB.
 
-#### gb_reset
+#### [gb_reset](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_reset())
 
 This function resets the game being played, as though the console had been
 powered off and on. gb_reset is called by [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()) to initialise the CPU
@@ -190,7 +190,7 @@ Deprecated: do not use. The RTC is ticked internally.
 
 Execute a bootrom image on reset. A reset must be performed after calling
 gb_set_bootrom for these changes to take effect. This is because [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()) calls
-gb_reset, but gb_set_bootrom must be called after [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()).
+[gb_reset](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_reset()), but gb_set_bootrom must be called after [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()).
 The bootrom must be either a CGB, DMG or a MGB bootrom.
 
 ## License
