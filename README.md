@@ -165,9 +165,14 @@ registers.
 This function returns the save size of the game being played. This function
 returns 0 if the game does not use any save data.
 
-#### gb_run_frame
+#### [gb_run_frame_dualfetch](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_run_frame_dualfetch())
 
-This function runs the CPU until a full frame is rendered to the LCD.
+This function runs the CPU until a full frame is rendered to the LCD using the faster dual-fetch chained opcode dispatch.
+This is the default function to use when using Walnut-CGB. 
+
+#### [gb_run_frame](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_run_frame())
+
+This function runs the CPU until a full frame is rendered to the LCD using the original 8-bit single opcode dispatch.
 
 #### gb_colour_hash
 
