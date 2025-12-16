@@ -177,7 +177,7 @@ the same way as the Game Boy Color to add colour to Game Boy games.
 
 This function returns the name of the game.
 
-#### gb_set_rtc
+#### [gb_set_rtc](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_set_rtc())
 
 Set the time of the real time clock (RTC). Some games use this RTC data.
 
@@ -185,7 +185,7 @@ Set the time of the real time clock (RTC). Some games use this RTC data.
 
 Deprecated: do not use. The RTC is ticked internally.
 
-#### gb_set_bootrom
+#### [gb_set_bootrom](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_set_bootrom())
 
 Execute a bootrom image on reset. A reset must be performed after calling
 gb_set_bootrom for these changes to take effect. This is because gb_init calls
