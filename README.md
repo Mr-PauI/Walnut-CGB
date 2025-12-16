@@ -6,7 +6,7 @@ Important: To use the new dual-fetch CPU execution model, calls to gb_run_frame(
   
 Walnut-CGB enables CGB support by default. Unlike Peanut-GB’s CGB branch, Walnut-CGB outputs RGB565 for Game Boy Color games.  
   
-The [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki) contains further details on implementation specifics, execution models, and framebuffer handling.   
+The [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki) contains further details on implementation specifics, execution models, and framebuffer handling. Several code examples have been added to this section and I will continue to expand it.  
   
 # Walnut-CGB  
   
