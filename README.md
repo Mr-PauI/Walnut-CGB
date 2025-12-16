@@ -100,7 +100,7 @@ Documentation of function prototypes can be found at the bottom of [walnut_gb.h]
 ### Required Functions
 
 The front-end implementation must provide a number of functions to the library.
-These functions are set when calling gb_init.
+These functions are set when calling [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()).
 
 - gb_rom_read
 - gb_rom_read_16bit
@@ -156,7 +156,7 @@ These functions are provided by Walnut-CGB.
 #### gb_reset
 
 This function resets the game being played, as though the console had been
-powered off and on. gb_reset is called by gb_init to initialise the CPU
+powered off and on. gb_reset is called by [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()) to initialise the CPU
 registers.
 
 #### gb_get_save_size
@@ -188,8 +188,8 @@ Deprecated: do not use. The RTC is ticked internally.
 #### [gb_set_bootrom](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_set_bootrom())
 
 Execute a bootrom image on reset. A reset must be performed after calling
-gb_set_bootrom for these changes to take effect. This is because gb_init calls
-gb_reset, but gb_set_bootrom must be called after gb_init.
+gb_set_bootrom for these changes to take effect. This is because [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()) calls
+gb_reset, but gb_set_bootrom must be called after [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()).
 The bootrom must be either a CGB, DMG or a MGB bootrom.
 
 ## License
