@@ -34,6 +34,7 @@ It includes all DMG updates from its main branch as well as the CGB support fork
 
 ## Caveats
 
+- The original 8-bit implementation is preserved, failing to use gb_run_frame_dualfetch() and disabling 16 or 32-bit dma options results is original Peanut-GB/CGB performance
 - The LCD rendering is performed line by line, so certain animations will not
   render properly (such as in Prehistorik Man).
 - Some games may not be playable due to emulation inaccuracy
