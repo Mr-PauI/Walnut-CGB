@@ -160,7 +160,7 @@ This function resets the game being played, as though the console had been
 powered off and on. gb_reset is called by [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()) to initialise the CPU
 registers.
 
-#### gb_get_save_size
+#### [gb_get_save_size](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_get_save_size_s())
 
 This function returns the save size of the game being played. This function
 returns 0 if the game does not use any save data.
