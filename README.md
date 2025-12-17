@@ -1,6 +1,6 @@
 Note: I haven’t yet updated the examples; however, with minimal adjustments they can be made to work with Walnut-CGB.  
   
-Walnut-CGB is mostly a drop-in replacement for Peanut-GB. The only API difference is the requirement to provide [read16](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_16bit()) and read32 functions during initialization. Otherwise, it behaves like Peanut-GB when the same feature flags are enabled.  
+Walnut-CGB is mostly a drop-in replacement for Peanut-GB. The only API difference is the requirement to provide [read16](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_16bit()) and [read32](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_32bit()) functions during initialization. Otherwise, it behaves like Peanut-GB when the same feature flags are enabled.  
   
 Important: To use the new dual-fetch CPU execution model, calls to gb_run_frame() must be replaced with [gb_run_frame_dualfetch()](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_run_frame_dualfetch()). If this change is not made, Walnut-CGB will continue to use the original 8-bit Peanut-GB execution core (with any enabled DMA optimizations), and no dispatch-model performance improvements will be realized.  
   
@@ -105,7 +105,7 @@ These functions are set when calling [gb_init](https://github.com/Mr-PauI/Walnut
 
 - [gb_rom_read](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read())
 - [gb_rom_read_16bit](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_16bit())
-- gb_rom_read_32bit
+- [gb_rom_read_32bit](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_32bit())
 - gb_cart_ram_read
 - gb_cart_ram_write
 - gb_error
