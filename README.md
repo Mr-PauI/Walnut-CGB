@@ -1,5 +1,5 @@
 Note: I haven’t yet updated the SDL2 example; however, with minimal adjustments they can be made to work with Walnut-CGB.
-Please see the Arduino demo for a complete working example of Walnut-CGB.
+Please see the Arduino example for a complete working example of Walnut-CGB.
   
 Walnut-CGB is mostly a drop-in replacement for Peanut-GB. The only API difference is the requirement to provide [read16](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_16bit()) and [read32](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_32bit()) functions during initialization. Otherwise, it behaves like Peanut-GB when the same feature flags are enabled.  
   
