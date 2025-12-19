@@ -53,7 +53,11 @@ a ROM file into.  Alternatively, run in a terminal using `walnut-sdl game.gb`,
 which will automatically create the save file `game.sav` for the game if one
 isn't found. Or, run with `walnut-sdl game.gb save.sav` to specify a save file.
 
-### Screenshot
+### ESP32-S3FN8 Walnut-CGB Implementation Recordings
+
+![Mario Deluxe - Cardputer](/screencaps/MarioDeluxe_Cardputer.gif)
+
+### Screenshot 
 
 ![Pokemon Blue - Main screen animation](/screencaps/PKMN_BLUE.gif)
 ![Legend of Zelda: Links Awakening - animation](/screencaps/ZELDA.gif)
