@@ -56,6 +56,7 @@ isn't found. Or, run with `walnut-sdl game.gb save.sav` to specify a save file.
 ### ESP32-S3FN8 Walnut-CGB Implementation Recordings
 
 ![Mario Deluxe - Cardputer](/screencaps/MarioDeluxe_Cardputer.gif)
+![Zelda: Oracle of Seasons - Cardputer](/screencaps/Zelda_OracleSeasons_Cardputer.gif)
 
 ### Screenshot 
 
