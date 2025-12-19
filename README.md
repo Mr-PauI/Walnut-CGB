@@ -42,7 +42,17 @@ It includes all DMG updates from its main branch as well as the CGB support fork
   accurate APU timing and emulation is required, then Blargg's Gb_Snd_Emu
   library (or an alternative) can be used instead.
 
-## SDL2 Example
+## [Arduino Example](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/arduino/arduino.ino)
+
+This is a basic example of a Walnut-CGB Arduino implementation for the M5Stack Cardputer.
+This implementation does not include paging, just available RAM so is extremely
+limited in what it can load without a more robust memory solution(XIP/flash, paging or PSRAM)
+Gameboy Colour animated gifs below were captured on an implementation with a
+paging solution employed. Internal flash storage can be used on ESP32/ESP32-s3 as
+long as alignment rules are observed. ISO C memory functions are also included
+in comments for other platforms.
+
+## SDL2 Example - NOT YET UPDATED, see above example for the time being or use instructions at start of readme to implement.
 
 The flagship example implementation is given in walnut_sdl.c, which uses SDL2 to
 draw the screen and take input. Run `cmake` or `make` in the ./examples/sdl2/
