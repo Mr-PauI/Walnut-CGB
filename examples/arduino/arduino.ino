@@ -197,10 +197,8 @@ void gb_error(struct gb_s *gb, const enum gb_error_e gb_err, const uint16_t val)
 /**
  * Draws scanline into framebuffer.
  */
-/* Draws scanline into framebuffer. */  
 void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[160],  
       const uint_fast8_t line) {  
-      //struct priv_t *priv = (priv_t *)gb->direct.priv; // if your frame buffer is in the priv structure you can access it like this(optional)  
       int yplot=line * DEST_H / LCD_HEIGHT; // (optional) this is our scaling calculation, done once per horizontal line.  
                                             // Skipping non-visible lines provides a small boost. LCD_HEIGHT is defined in walnut-cgb.h
       uint16_t (*fb565)[LCD_WIDTH] = ((priv_t *)gb->direct.priv)->fb;
