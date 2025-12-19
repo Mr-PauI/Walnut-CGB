@@ -1,5 +1,4 @@
-// Sound isn't done yet
-// (or might never be)
+// Sound is implemented in SDL2 example
 #define ENABLE_SOUND 0
 #define ENABLE_LCD 1
 
