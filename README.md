@@ -44,13 +44,12 @@ It includes all DMG updates from its main branch as well as the CGB support fork
 
 ## [Arduino Example](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/arduino/arduino.ino)
 
-This is a basic example of a Walnut-CGB Arduino implementation for the M5Stack Cardputer.
-This implementation does not include paging, just available RAM so is extremely
-limited in what it can load without a more robust memory solution(XIP/flash, paging or PSRAM)
-Gameboy Colour animated gifs below were captured on an implementation with a
-paging solution employed. Internal flash storage can be used on ESP32/ESP32-s3 as
-long as alignment rules are observed. ISO C memory functions are also included
-in comments for other platforms.
+This is a basic Walnut-CGB Arduino example for the M5Stack Cardputer. 
+
+- Paging is not included; only available RAM is used, so ROMs are extremely limited.
+- Game Boy Color GIFs below were captured on a full implementation with paging.
+- Internal flash storage can be used on ESP32/ESP32-S3 as long as alignment rules are observed.
+- ISO C memory functions are included in comments for other platforms.
 
 ## SDL2 Example - NOT YET UPDATED, see above example for the time being or use instructions at start of readme to implement.
 
