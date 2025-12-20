@@ -129,8 +129,20 @@ These functions are set when calling [gb_init](https://github.com/Mr-PauI/Walnut
 
 Both of these are ways to execute cycles for one frame, and can be swapped at runtime to examine differences:  
 [gb_run_frame](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_run_frame()) (original 8-bit single instruction dispatch)  
-[gb_run_frame_dualfetch](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_run_frame_dualfetch()) (uses the new 16-bit dual-fetch architecture)  
+[gb_run_frame_dualfetch](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_run_frame_dualfetch()) (uses the new 16-bit dual-fetch architecture)
 
+### Optional Features
+
+These optional features of **Walnut-CGB** are controlled via **compile-time macros** (`#define`).  
+Setting any of these macros to `1` activates the feature.
+
+> **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3).
+
+| Macro | Description |
+|-------|-------------|
+| `WALNUT_GB_16BIT_DMA` | Enables 16-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. Alignment and aliasing restrictions do not affect dual-fetch performance in this mode. |
+| `WALNUT_GB_32BIT_DMA` | Enables 32-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. Alignment and aliasing restrictions must be considered on some platforms. |
+| `WALNUT_GB_RGB565_BIGENDIAN` | If your display uses native **big-endian RGB565**, this macro switches the default little-endian RGB565 output to big-endian. |
 
 ### Optional Functions
 
