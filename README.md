@@ -140,8 +140,8 @@ Setting any of these macros to `1` activates the feature.
 
 | Macro | Description |
 |-------|-------------|
-| `WALNUT_GB_16BIT_DMA` | Enables 16-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. DMA modes do not affect dual-fetch performance. |
-| `WALNUT_GB_32BIT_DMA` | Enables 32-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. DMA modes do not affect dual-fetch performance. |
+| `WALNUT_GB_16BIT_DMA` | Enables 16-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. |
+| `WALNUT_GB_32BIT_DMA` | Enables 32-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. |
 | `WALNUT_GB_RGB565_BIGENDIAN` | If your display uses native **big-endian RGB565**, this macro switches the default little-endian RGB565 output to big-endian. |
 
 ### Optional Functions
