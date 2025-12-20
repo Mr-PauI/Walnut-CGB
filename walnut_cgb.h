@@ -61,6 +61,8 @@
 // WALNUT_GB_16_BIT_OPS when true enables 16-bit operation for opcodes with 16-bit reads(from stack, immedate 16-bit operands, etc)
 #define WALNUT_GB_16_BIT_OPS 0
 // WALNUT_GB_16BIT_DMA uses 16-bit(and 32-bit) dma transfers rather than byte-by-byte, only one mode can be used at a time. The gb_read_32bit function is used for the 32-bit DMA, otherwise that function will not be called
+//  **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3). On some platforms, you may need to compile with `-fno-strict-aliasing` to avoid issues with pointer aliasing.
+// an alignment aware and 8-bit write fallback mode are planned. If required for your implementation feel free to make an issue(or pull request) and I can make it more of a priority.
 #define WALNUT_GB_16BIT_DMA 0
 #define WALNUT_GB_32BIT_DMA 1
 #define WALNUT_GB_RGB565_BIGENDIAN 0
@@ -9461,5 +9463,6 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
+
 
 
