@@ -136,7 +136,7 @@ Both of these are ways to execute cycles for one frame, and can be swapped at ru
 These optional features of **Walnut-CGB** are controlled via **compile-time macros** (`#define`).  
 Setting any of these macros to `1` activates the feature.
 
-> **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3).
+> **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3). On some platforms, you may need to compile with `-fno-strict-aliasing` to avoid issues with pointer aliasing.
 
 | Macro | Description |
 |-------|-------------|
