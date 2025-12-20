@@ -136,12 +136,12 @@ Both of these are ways to execute cycles for one frame, and can be swapped at ru
 These optional features of **Walnut-CGB** are controlled via **compile-time macros** (`#define`).  
 Setting any of these macros to `1` activates the feature.
 
-> **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3). On some platforms, you may need to compile with `-fno-strict-aliasing` to avoid issues with pointer aliasing.
+> **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3). On some platforms, you may need to compile with `-fno-strict-aliasing` to avoid issues with pointer aliasing. The dual-fetch chained opcode dispatch works regardless of aliasing or alignment restrictions.
 
 | Macro | Description |
 |-------|-------------|
-| `WALNUT_GB_16BIT_DMA` | Enables 16-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. Alignment and aliasing restrictions do not affect dual-fetch performance in this mode. |
-| `WALNUT_GB_32BIT_DMA` | Enables 32-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. Alignment and aliasing restrictions must be considered on some platforms. |
+| `WALNUT_GB_16BIT_DMA` | Enables 16-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. DMA modes do not affect dual-fetch performance. |
+| `WALNUT_GB_32BIT_DMA` | Enables 32-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. DMA modes do not affect dual-fetch performance. |
 | `WALNUT_GB_RGB565_BIGENDIAN` | If your display uses native **big-endian RGB565**, this macro switches the default little-endian RGB565 output to big-endian. |
 
 ### Optional Functions
