@@ -400,12 +400,6 @@ char* file_picker() {
   return selected_path;
 }
 
-#if ENABLE_SOUND
-void audioSetup() {
-  // headache. stopped here lol
-}
-#endif
-
 void setup() {
   // put your setup code here, to run once:
   update_palette();
@@ -557,6 +551,7 @@ void setup() {
     * do not delay.
     * This is a naive frame pacing loop for example purposes
     * a more robust solution can significantly improve performance.
+    * Suggested improvements: timing debt, auto-frame skip, or advanced pacing logic.
     */
     if(delay < 0)
       continue;
@@ -565,11 +560,6 @@ void setup() {
   }
 }
 
-// Unused as I'm using an infinite while-loop
-// inside the main function because otherwise
-// I'd need to deal with global variables
-// which are stupid (doing that gave me an
-// ambiguous compiler error so I no no wanna)
 void loop() {
 
 }
