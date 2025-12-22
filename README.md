@@ -234,6 +234,10 @@ For developers interested in implementing automatic color matching, I’ve inclu
 
 These arrays can be used directly in your projects for accurate color reproduction.
 
+![Super Gameboy Palette Resource](https://github.com/Mr-PauI/Walnut-CGB/blob/master/screencaps/sgb_example.png)  
+*Example of sgb.h palettes matched with popular titles*
+
+
 For developers interested in adding sound to their implementation, the following library is included in the SDL2 example directory:
 [https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2/minigb_apu](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2/minigb_apu)
 
