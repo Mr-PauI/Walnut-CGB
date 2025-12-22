@@ -31,7 +31,7 @@ It includes all DMG updates from its main branch as well as the CGB support fork
 - If sound is enabled, an external audio processing unit (APU) library is
   required.
   A fast audio processing unit (APU) library is included in this repository at
-  https://github.com/deltabeard/Peanut-GB/tree/master/examples/sdl2/minigb_apu .
+  [https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2/minigb_apu](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2/minigb_apu) .
 
 ## Caveats
 
@@ -224,6 +224,18 @@ Execute a bootrom image on reset. A reset must be performed after calling
 gb_set_bootrom for these changes to take effect. This is because [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()) calls
 [gb_reset](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_reset()), but gb_set_bootrom must be called after [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()).
 The bootrom must be either a CGB, DMG or a MGB bootrom.
+
+### Additional Resources
+
+For developers interested in implementing automatic color matching, I’ve included some ready-to-use palette data:
+
+- **Super Game Boy Palettes** – Indexed 24-bit RGB888 format, includes official and community-sourced palettes. Found in [`extras/sgb.h`](https://github.com/Mr-PauI/Walnut-CGB/blob/master/extras/sgb.h)
+- **Game Boy Color Palettes** – Indexed 24-bit RGB888 format, official palettes only. Found in [`extras/cgb.h`](https://github.com/Mr-PauI/Walnut-CGB/blob/master/extras/cgb.h)
+
+These arrays can be used directly in your projects for accurate color reproduction.
+
+For developers interested in adding sound to their implementation, the following library is included in the SDL2 example directory:
+[https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2/minigb_apu](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2/minigb_apu)
 
 ## License
 
