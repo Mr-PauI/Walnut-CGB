@@ -1,6 +1,12 @@
-/**
- * MIT License
+/*
+ * Walnut-CGB additions
+ * Copyright (c) 2025 Mr. Paul (https://github.com/Mr-PauI)
  *
+ * Licensed under the MIT License.
+ *
+ * --------------------------------------------------------------------------
+ *
+ * Peanut-GB
  * Copyright (c) 2018-2023 Mahyar Koshkouei
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,13 +27,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  *
- * Please note that at least two parts of source code within this project was
- * taken from the SameBoy project at https://github.com/LIJI32/SameBoy/ which at
- * the time of this writing is released under the MIT License. Occurrences of
- * this code is marked as being taken from SameBoy with a comment.
- * SameBoy, and code marked as being taken from SameBoy,
- * is Copyright (c) 2015-2019 Lior Halphon.
+ * Please note that at least two parts of source code within this project were
+ * taken from the SameBoy project at https://github.com/LIJI32/SameBoy/
+ * which, at the time of this writing, is released under the MIT License.
+ * Occurrences of this code are marked as being taken from SameBoy with a comment.
+ *
+ * SameBoy
+ * Copyright (c) 2015-2019 Lior Halphon
  */
+
 
 #ifndef WALNUT_GB_H
 #define WALNUT_GB_H
@@ -54,11 +62,13 @@
 #define WALNUT_GB_SAFE_DUALFETCH_OPCODES 0
 #define WALNUT_GB_SAFE_DUALFETCH_DMA  0
 #define WALNUT_GB_SAFE_DUALFETCH_MBC  0
-// WALNUT_GB_16_BIT_OPS_DUALFETCH when true enables 16-bit operation for opcodes with 16-bit reads for the first half of the dual fetch chain // currently breaks compatibility with some games, 16-bit opcode optimization needs revisions
+// WALNUT_GB_16_BIT_OPS_DUALFETCH when true enables 16-bit operation for opcodes with 16-bit reads for the first half of the dual fetch chain
+// currently breaks compatibility with some games, 16-bit opcode optimization needs revisions. The 3 tiers here are used to isolate misbehaving opcodes more quickly when debugging.
 #define WALNUT_GB_16_BIT_OPS_DUALFETCH 0
 #define WALNUT_GB_16_BIT_OPS_DUALFETCH_DISABLED2 0
 #define WALNUT_GB_16_BIT_OPS_DUALFETCH_DISABLED 0
-// WALNUT_GB_16_BIT_OPS when true enables 16-bit operation for opcodes with 16-bit reads(from stack, immedate 16-bit operands, etc)
+// WALNUT_GB_16_BIT_OPS when true enables 16-bit operation for opcodes with 16-bit reads(from stack, immedate 16-bit operands, etc) in the second half of the chained execution.
+// Like the above, this can break compatibility with some games and is disabled by default.
 #define WALNUT_GB_16_BIT_OPS 0
 // WALNUT_GB_16BIT_DMA uses 16-bit(and 32-bit) dma transfers rather than byte-by-byte, only one mode can be used at a time. The gb_read_32bit function is used for the 32-bit DMA, otherwise that function will not be called
 //  **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3). On some platforms, you may need to compile with `-fno-strict-aliasing` to avoid issues with pointer aliasing.
@@ -66,9 +76,10 @@
 #define WALNUT_GB_16BIT_DMA 0
 #define WALNUT_GB_32BIT_DMA 1
 #define WALNUT_GB_RGB565_BIGENDIAN 0
-IRAM_ATTR void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val);
-IRAM_ATTR void __gb_write16(struct gb_s *gb, uint_fast16_t addr, uint16_t val);
-IRAM_ATTR void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val);
+uint8_t __gb_read(struct gb_s *gb, uint16_t addr);
+void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val);
+void __gb_write16(struct gb_s *gb, uint_fast16_t addr, uint16_t val);
+void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val);
 void __gb_step_cpu_x(struct gb_s *gb);
 #if WALNUT_GB_32BIT_DMA && WALNUT_GB_16BIT_DMA
 #error "Only one DMA mode can be enabled at a time!"
@@ -885,9 +896,9 @@ struct gb_s
 #define IO_STAT_MODE_OAM_SCAN		2
 #define IO_STAT_MODE_LCD_DRAW		3
 #define IO_STAT_MODE_VBLANK_OR_TRANSFER_MASK 0x1
-IRAM_ATTR uint8_t __gb_read(struct gb_s *gb, uint16_t addr);
 
-IRAM_ATTR uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
+
+uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
 {
     switch(WALNUT_GB_GET_MSN16(addr))
     {
@@ -1032,7 +1043,7 @@ IRAM_ATTR uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
     WGB_UNREACHABLE();
 }
 
-IRAM_ATTR uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
+uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
 {
     switch (WALNUT_GB_GET_MSN16(addr))
     {
@@ -1177,7 +1188,7 @@ IRAM_ATTR uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
  * Internal function used to read bytes.
  * addr is host platform endian.
  */
-IRAM_ATTR uint8_t __gb_read(struct gb_s *gb, uint16_t addr)
+uint8_t __gb_read(struct gb_s *gb, uint16_t addr)
 {
 	switch(WALNUT_GB_GET_MSN16(addr))
 	{
@@ -1349,7 +1360,7 @@ IRAM_ATTR uint8_t __gb_read(struct gb_s *gb, uint16_t addr)
 /**
  * Internal function used to write bytes.
  */
-IRAM_ATTR void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
+void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 {
 	switch(WALNUT_GB_GET_MSN16(addr))
 	{
@@ -1917,7 +1928,7 @@ IRAM_ATTR void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 	return;
 }
 
-IRAM_ATTR void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
+void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
     switch (WALNUT_GB_GET_MSN16(addr)) {
         case 0x8: // VRAM
         case 0x9:
@@ -1968,7 +1979,7 @@ IRAM_ATTR void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
 }
 
 // The 16-bit write function is mainly for DMA transfers so focuses on accesible memory regions and falls back to the 8-bit version for all other cases.
-IRAM_ATTR void __gb_write16(struct gb_s *gb, uint_fast16_t addr, uint16_t val)
+void __gb_write16(struct gb_s *gb, uint_fast16_t addr, uint16_t val)
 {
     switch(WALNUT_GB_GET_MSN16(addr))
     {
@@ -6889,17 +6900,32 @@ static inline void __gb_step_cpu(struct gb_s *gb)
 				gb->hram_io[IO_STAT] = (gb->hram_io[IO_STAT] & ~STAT_MODE) | IO_STAT_MODE_OAM_SCAN;
 				gb->counter.lcd_count = 0;
 
+
 #if WALNUT_FULL_GBC_SUPPORT
 				//DMA GBC
 				if(gb->cgb.cgbMode && !gb->cgb.dmaActive && gb->cgb.dmaMode)
 				{
-#if WALNUT_GB_16_BIT_DISABLED
+#if WALNUT_GB_32BIT_DMA
+					// Optimized 16-bit path
+					for (uint8_t i = 0; i < 0x10; i += 4)
+					{
+							uint32_t val = __gb_read32(gb, (gb->cgb.dmaSource & 0xFFF0) + i);
+							__gb_write32(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val);
+							// 8-bit logic if there is some cause to fall back
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val);
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 1, val >> 8);
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 2, val >> 16);
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 3, val >> 24);
+					}
+#elif WALNUT_GB_16BIT_DMA
 					// Optimized 16-bit path
 					for (uint8_t i = 0; i < 0x10; i += 2)
 					{
 							uint16_t val = __gb_read16(gb, (gb->cgb.dmaSource & 0xFFF0) + i);
-							__gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val & 0xFF);
-							__gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 1, val >> 8);
+							__gb_write16(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val);
+							// 8-bit logic if there is some cause to fall back
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val & 0xFF);
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 1, val >> 8);
 					}
 #else
 			    // Original 8-bit path
@@ -6912,7 +6938,8 @@ static inline void __gb_step_cpu(struct gb_s *gb)
 
 					gb->cgb.dmaSource += 0x10;
 					gb->cgb.dmaDest += 0x10;
-					if(!(--gb->cgb.dmaSize)) gb->cgb.dmaActive = 1;
+					if(!(--gb->cgb.dmaSize)) {gb->cgb.dmaActive = 1;
+					}
 				}
 #endif
 				if(gb->hram_io[IO_STAT] & STAT_MODE_2_INTR)
@@ -6966,7 +6993,7 @@ void gb_run_frame(struct gb_s *gb)
 	}
 }
 
-IRAM_ATTR void gb_run_frame_dualfetch(struct gb_s *gb)
+void gb_run_frame_dualfetch(struct gb_s *gb)
 {
 	gb->gb_frame = false;
 #if (WALNUT_GB_SAFE_DUALFETCH_DMA || WALNUT_GB_SAFE_DUALFETCH_MBC)
@@ -9383,13 +9410,27 @@ void __gb_step_cpu_x(struct gb_s *gb)
 				//DMA GBC
 				if(gb->cgb.cgbMode && !gb->cgb.dmaActive && gb->cgb.dmaMode)
 				{
-#if WALNUT_GB_16_BIT_DISABLED
+#if WALNUT_GB_32BIT_DMA
+					// Optimized 16-bit path
+					for (uint8_t i = 0; i < 0x10; i += 4)
+					{
+							uint32_t val = __gb_read32(gb, (gb->cgb.dmaSource & 0xFFF0) + i);
+							__gb_write32(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val);
+							// 8-bit logic if there is some cause to fall back
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val);
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 1, val >> 8);
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 2, val >> 16);
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 3, val >> 24);
+					}
+#elif WALNUT_GB_16BIT_DMA
 					// Optimized 16-bit path
 					for (uint8_t i = 0; i < 0x10; i += 2)
 					{
 							uint16_t val = __gb_read16(gb, (gb->cgb.dmaSource & 0xFFF0) + i);
-							__gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val & 0xFF);
-							__gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 1, val >> 8);
+							__gb_write16(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val);
+							// 8-bit logic if there is some cause to fall back
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i, val & 0xFF);
+							// __gb_write(gb, ((gb->cgb.dmaDest & 0x1FF0) | 0x8000) + i + 1, val >> 8);
 					}
 #else
 			    // Original 8-bit path
@@ -9402,7 +9443,8 @@ void __gb_step_cpu_x(struct gb_s *gb)
 
 					gb->cgb.dmaSource += 0x10;
 					gb->cgb.dmaDest += 0x10;
-					if(!(--gb->cgb.dmaSize)) gb->cgb.dmaActive = 1;
+					if(!(--gb->cgb.dmaSize)) {gb->cgb.dmaActive = 1;
+					}
 				}
 #endif
 				if(gb->hram_io[IO_STAT] & STAT_MODE_2_INTR)
