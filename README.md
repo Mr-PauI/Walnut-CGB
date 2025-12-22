@@ -201,7 +201,7 @@ This is the default function to use when using Walnut-CGB.
 
 This function runs the CPU until a full frame is rendered to the LCD using the original 8-bit single opcode dispatch.
 
-#### gb_colour_hash
+#### [gb_colour_hash](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_colour_hash())
 
 This function calculates a hash of the game title. This hash is calculated in
 the same way as the Game Boy Color to add colour to Game Boy games.
