@@ -85,7 +85,7 @@ void __gb_step_cpu_x(struct gb_s *gb);
 #error "Only one DMA mode can be enabled at a time!"
 #endif
 #define WALNUT_GB
-// Im on esp32, so we can be explicit about being little endian
+// Walnut-CGB only supports little endian targets, this is a inherited Peanut-GB limitation. See: https://github.com/deltabeard/Peanut-GB/issues/150
 #define WALNUT_GB_IS_LITTLE_ENDIAN 1
 
 #if !defined(WALNUT_GB_IS_LITTLE_ENDIAN)
@@ -9505,6 +9505,7 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
+
 
 
 
