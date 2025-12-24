@@ -206,7 +206,7 @@ This function runs the CPU until a full frame is rendered to the LCD using the o
 This function calculates a hash of the game title. This hash is calculated in
 the same way as the Game Boy Color to add colour to Game Boy games.
 
-#### gb_get_rom_name
+#### [gb_get_rom_name](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_get_rom_name())
 
 This function returns the name of the game.
 
