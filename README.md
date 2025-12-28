@@ -142,7 +142,9 @@ Setting any of these macros to `1` activates the feature.
 |-------|-------------|
 | `WALNUT_GB_16BIT_DMA` | Enables 16-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. |
 | `WALNUT_GB_32BIT_DMA` | Enables 32-bit DMA. Only one DMA macro (16-bit or 32-bit) can be enabled at compile time. |
+| `WALNUT_GB_32BIT_ALIGNED` | If your platform cannot handle or has a severe penalty for unaligned 32-bit writes, this feature performs aligned 32-bit writes with an 8-bit fallback.|
 | `WALNUT_GB_RGB565_BIGENDIAN` | If your display uses native **big-endian RGB565**, this macro switches the default little-endian RGB565 output to big-endian. |
+
 
 ### Optional Functions
 
@@ -224,6 +226,7 @@ Execute a bootrom image on reset. A reset must be performed after calling
 gb_set_bootrom for these changes to take effect. This is because [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()) calls
 [gb_reset](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_reset()), but gb_set_bootrom must be called after [gb_init](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_init()).
 The bootrom must be either a CGB, DMG or a MGB bootrom.
+
 
 ### Additional Resources
 
