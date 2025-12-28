@@ -1951,7 +1951,7 @@ void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 }
 
 #ifdef WALNUT_GB_32BIT_ALIGNED
-IRAM_ATTR void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
+void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
     uint8_t *dst = NULL;
 
     switch (PEANUT_GB_GET_MSN16(addr)) {
@@ -9592,6 +9592,7 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
+
 
 
 
