@@ -75,6 +75,7 @@
 // an alignment aware and 8-bit write fallback mode are planned. If required for your implementation feel free to make an issue(or pull request) and I can make it more of a priority.
 #define WALNUT_GB_16BIT_DMA 0
 #define WALNUT_GB_32BIT_DMA 1
+#define WALNUT_GB_32BIT_ALIGNED 1
 #define WALNUT_GB_RGB565_BIGENDIAN 0
 uint8_t __gb_read(struct gb_s *gb, uint16_t addr);
 void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val);
@@ -1696,12 +1697,33 @@ void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 			gb->hram_io[IO_DMA] = val;
 #endif
 #if WALNUT_GB_32BIT_DMA
+#if WALNUT_GB_32BIT_ALIGNED
+		/* Alignment aware 32-bit read path: fetch four bytes at a time */
+		uint8_t *oam = gb->oam;
+
+		if (((uintptr_t)oam & 3))
+				for (i = 0; i < OAM_SIZE; i += 4)
+				{
+						uint32_t v = __gb_read32(gb, dma_addr + i);
+						oam[i+0] = v;
+						oam[i+1] = v >> 8;
+						oam[i+2] = v >> 16;
+						oam[i+3] = v >> 24;
+				}
+		else
+			for (i = 0; i < OAM_SIZE; i += 4)
+			{
+					uint32_t v = __gb_read32(gb, dma_addr + i);
+					*(uint32_t *)(oam + i) = v;
+			}
+#else
     /* 32-bit read path: fetch four bytes at a time */
     for (i = 0; i < OAM_SIZE; i += 4)
     {
         uint32_t v = __gb_read32(gb, dma_addr + i);
 				*((uint32_t *)(gb->oam + i)) = v;
     }
+#endif
 #elif WALNUT_GB_16BIT_DMA
     /* 16-bit read path: fetch two bytes at a time */
     for (i = 0; i < OAM_SIZE; i += 2)
@@ -1928,6 +1950,70 @@ void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 	return;
 }
 
+#ifdef WALNUT_GB_32BIT_ALIGNED
+IRAM_ATTR void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
+    uint8_t *dst = NULL;
+
+    switch (PEANUT_GB_GET_MSN16(addr)) {
+        case 0x8: // VRAM
+        case 0x9:
+#if PEANUT_FULL_GBC_SUPPORT
+            dst = &gb->vram[addr - gb->cgb.vramBankOffset];
+#else
+            dst = &gb->vram[addr - VRAM_ADDR];
+#endif
+            break;
+
+        case 0xC: // WRAM bank 0
+        case 0xD:
+#if PEANUT_FULL_GBC_SUPPORT
+            dst = &gb->wram[addr - gb->cgb.wramBankOffset];
+#else
+            dst = &gb->wram[addr - WRAM_1_ADDR + WRAM_BANK_SIZE];
+#endif
+            break;
+
+        case 0xE: // Echo RAM
+            dst = &gb->wram[addr - ECHO_ADDR];
+            break;
+
+        case 0xF: // HRAM / OAM
+            if (addr < OAM_ADDR) {
+#if PEANUT_FULL_GBC_SUPPORT
+                dst = &gb->wram[(addr - 0x2000) - gb->cgb.wramBankOffset];
+#else
+                dst = &gb->wram[addr - ECHO_ADDR];
+#endif
+            } else if (addr < UNUSED_ADDR) {
+                dst = &gb->oam[addr - OAM_ADDR];
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    if (dst) {
+        if (((uintptr_t)dst & 3) == 0) {
+            /* Aligned 32-bit store */
+            *(uint32_t *)dst = val;
+        } else {
+            /* Fallback: byte-wise store */
+            dst[0] = (uint8_t)(val);
+            dst[1] = (uint8_t)(val >> 8);
+            dst[2] = (uint8_t)(val >> 16);
+            dst[3] = (uint8_t)(val >> 24);
+        }
+        return;
+    }
+
+    /* Fallback for special addresses or side-effectful regions */
+    __gb_write(gb, addr + 0, (uint8_t)(val));
+    __gb_write(gb, addr + 1, (uint8_t)(val >> 8));
+    __gb_write(gb, addr + 2, (uint8_t)(val >> 16));
+    __gb_write(gb, addr + 3, (uint8_t)(val >> 24));
+}
+#else
 void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
     switch (WALNUT_GB_GET_MSN16(addr)) {
         case 0x8: // VRAM
@@ -1977,6 +2063,7 @@ void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
     __gb_write(gb, addr + 2, (val >> 16) & 0xFF);
     __gb_write(gb, addr + 3, (val >> 24) & 0xFF);
 }
+#endif
 
 // The 16-bit write function is mainly for DMA transfers so focuses on accesible memory regions and falls back to the 8-bit version for all other cases.
 void __gb_write16(struct gb_s *gb, uint_fast16_t addr, uint16_t val)
