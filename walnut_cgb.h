@@ -72,9 +72,10 @@
 #define WALNUT_GB_16_BIT_OPS 0
 // WALNUT_GB_16BIT_DMA uses 16-bit(and 32-bit) dma transfers rather than byte-by-byte, only one mode can be used at a time. The gb_read_32bit function is used for the 32-bit DMA, otherwise that function will not be called
 //  **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3). On some platforms, you may need to compile with `-fno-strict-aliasing` to avoid issues with pointer aliasing.
-// an alignment aware and 8-bit write fallback mode are planned. If required for your implementation feel free to make an issue(or pull request) and I can make it more of a priority.
+// an alignment aware and 8-bit read/write fallback mode are in development, If required for your implementation feel free to make an issue(or pull request) and I can make it more of a priority.
 #define WALNUT_GB_16BIT_DMA 0
 #define WALNUT_GB_32BIT_DMA 1
+#define WALNUT_GB_16BIT_ALIGNED 1
 #define WALNUT_GB_32BIT_ALIGNED 1
 #define WALNUT_GB_RGB565_BIGENDIAN 0
 uint8_t __gb_read(struct gb_s *gb, uint16_t addr);
@@ -898,7 +899,138 @@ struct gb_s
 #define IO_STAT_MODE_LCD_DRAW		3
 #define IO_STAT_MODE_VBLANK_OR_TRANSFER_MASK 0x1
 
+#ifdef WALNUT_GB_16BIT_ALIGNED
+uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
+{
+    switch (PEANUT_GB_GET_MSN16(addr))
+    {
+        // --- Boot ROM / Fixed ROM 0
+        case 0x0:
+            if (gb->hram_io[IO_BOOT] == 0 && addr < 0x0100)
+                return (uint16_t)gb->gb_bootrom_read(gb, addr)
+                     | ((uint16_t)gb->gb_bootrom_read(gb, addr + 1) << 8);
+#if PEANUT_FULL_GBC_SUPPORT
+            else if (gb->cgb.cgbMode && gb->hram_io[IO_BOOT] == 0 && addr >= 0x0200 && addr < 0x0900)
+                return (uint16_t)gb->gb_bootrom_read(gb, addr)
+                     | ((uint16_t)gb->gb_bootrom_read(gb, addr + 1) << 8);
+#endif
+            /* fallthrough */
+        case 0x1:
+        case 0x2:
+        case 0x3:
+            return gb_rom_read16_internal_(addr);
 
+        // --- Switchable ROM banks (0x4000–0x7FFF)
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        {
+            uint32_t bank_offset = (gb->selected_rom_bank - 1) * ROM_BANK_SIZE;
+            return gb_rom_read16_internal_(addr + bank_offset);
+        }
+
+        // --- VRAM (0x8000–0x9FFF)
+        case 0x8:
+        case 0x9:
+        {
+            uint8_t *vram_base =
+#if PEANUT_FULL_GBC_SUPPORT
+                &gb->vram[addr - gb->cgb.vramBankOffset];
+#else
+                &gb->vram[addr - VRAM_ADDR];
+#endif
+            if (addr + 1 < 0xA000)
+            {
+                if (((uintptr_t)vram_base & 1) == 0)
+                    return *(uint16_t *)vram_base;
+                else
+                    return (uint16_t)vram_base[0] | ((uint16_t)vram_base[1] << 8);
+            }
+            return vram_base[0]; // last byte fallback
+        }
+
+        // --- External RAM / RTC (0xA000–0xBFFF)
+        case 0xA:
+        case 0xB:
+            if (gb->mbc == 3 && gb->cart_ram_bank >= 0x08)
+                return gb->rtc_latched.bytes[gb->cart_ram_bank - 0x08]
+                     | ((uint16_t)gb->rtc_latched.bytes[gb->cart_ram_bank - 0x08 + 1] << 8);
+            else if (gb->cart_ram && gb->enable_cart_ram)
+            {
+                uint16_t offset;
+                if (gb->mbc == 2)
+                    offset = addr & 0x1FF;
+                else if ((gb->cart_mode_select || gb->mbc != 1) && gb->cart_ram_bank < gb->num_ram_banks)
+                    offset = addr - CART_RAM_ADDR + (gb->cart_ram_bank * CRAM_BANK_SIZE);
+                else
+                    offset = addr - CART_RAM_ADDR;
+
+                return gb->gb_cart_ram_read(gb, offset)
+                     | ((uint16_t)gb->gb_cart_ram_read(gb, offset + 1) << 8);
+            }
+            return 0xFFFF;
+
+        // --- Work RAM (0xC000–0xDFFF)
+        case 0xC:
+        case 0xD:
+        {
+            uint8_t *wram_ptr =
+#if PEANUT_FULL_GBC_SUPPORT
+                (gb->cgb.cgbMode && addr >= WRAM_1_ADDR)
+                    ? &gb->wram[addr - gb->cgb.wramBankOffset]
+                    : &gb->wram[addr - WRAM_0_ADDR];
+#else
+                &gb->wram[addr - WRAM_0_ADDR];
+#endif
+            if (((uintptr_t)wram_ptr & 1) == 0)
+                return *(uint16_t *)wram_ptr;
+            else
+                return (uint16_t)wram_ptr[0] | ((uint16_t)wram_ptr[1] << 8);
+        }
+
+        // --- Echo RAM (0xE000–0xFDFF)
+        case 0xE:
+        {
+            uint8_t *echo_ptr = &gb->wram[addr - ECHO_ADDR];
+            if (((uintptr_t)echo_ptr & 1) == 0)
+                return *(uint16_t *)echo_ptr;
+            else
+                return (uint16_t)echo_ptr[0] | ((uint16_t)echo_ptr[1] << 8);
+        }
+
+        // --- OAM / HRAM / IO (0xFE00–0xFFFF)
+        case 0xF:
+            if (addr < 0xFEA0)
+            {
+                uint8_t *oam_ptr = &gb->oam[addr - OAM_ADDR];
+                if (((uintptr_t)oam_ptr & 1) == 0)
+                    return *(uint16_t *)oam_ptr;
+                else
+                    return (uint16_t)oam_ptr[0] | ((uint16_t)oam_ptr[1] << 8);
+            }
+            else if (addr >= IO_ADDR)
+            {
+                // Some special registers require manual byte combine
+#if ENABLE_SOUND
+                if (addr >= 0xFF10 && addr <= 0xFF3F)
+                {
+                    uint8_t lo = audio_read(addr);
+                    uint8_t hi = audio_read(addr + 1);
+                    return lo | ((uint16_t)hi << 8);
+                }
+#endif
+                return (uint16_t)gb->hram_io[addr - IO_ADDR]
+                     | ((uint16_t)gb->hram_io[addr + 1 - IO_ADDR] << 8);
+            }
+            else
+                return 0xFFFF;
+    }
+
+    (gb->gb_error)(gb, GB_INVALID_READ, addr);
+    PGB_UNREACHABLE();
+}
+#else
 uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
 {
     switch(WALNUT_GB_GET_MSN16(addr))
@@ -1043,6 +1175,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
     (gb->gb_error)(gb, GB_INVALID_READ, addr);
     WGB_UNREACHABLE();
 }
+#endif
 
 uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
 {
@@ -9592,7 +9725,6 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
-
 
 
 
