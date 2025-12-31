@@ -55,7 +55,7 @@ void debugPrint(const char* str) {
 #endif
 }
 
-// Penaut-GB structures and functions.
+// Walnut-CGB structures and functions.
 struct priv_t
 {
 	/* Pointer to allocated memory holding GB file. */
