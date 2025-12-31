@@ -1177,6 +1177,173 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
 }
 #endif
 
+#if WALNUT_GB_32BIT_ALIGNED
+IRAM_ATTR uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
+{
+    switch (PEANUT_GB_GET_MSN16(addr))
+    {
+        // --- Boot ROM / Fixed ROM 0
+        case 0x0:
+            if (gb->hram_io[IO_BOOT] == 0 && addr < 0x0100)
+                return (uint32_t)gb->gb_bootrom_read(gb, addr)
+                     | ((uint32_t)gb->gb_bootrom_read(gb, addr + 1) << 8)
+                     | ((uint32_t)gb->gb_bootrom_read(gb, addr + 2) << 16)
+                     | ((uint32_t)gb->gb_bootrom_read(gb, addr + 3) << 24);
+#if PEANUT_FULL_GBC_SUPPORT
+            else if (gb->cgb.cgbMode && gb->hram_io[IO_BOOT] == 0 &&
+                     addr >= 0x0200 && addr < 0x0900)
+                return (uint32_t)gb->gb_bootrom_read(gb, addr)
+                     | ((uint32_t)gb->gb_bootrom_read(gb, addr + 1) << 8)
+                     | ((uint32_t)gb->gb_bootrom_read(gb, addr + 2) << 16)
+                     | ((uint32_t)gb->gb_bootrom_read(gb, addr + 3) << 24);
+#endif
+            /* fallthrough */
+        case 0x1:
+        case 0x2:
+        case 0x3:
+            return gb_rom_read32_internal_(addr);
+
+        // --- Switchable ROM banks
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        {
+            uint32_t bank_offset = (gb->selected_rom_bank - 1) * ROM_BANK_SIZE;
+            return gb_rom_read32_internal_(addr + bank_offset);
+        }
+
+        // --- VRAM
+        case 0x8:
+        case 0x9:
+        {
+#if PEANUT_FULL_GBC_SUPPORT
+            uint8_t *p = &gb->vram[addr - gb->cgb.vramBankOffset];
+#else
+            uint8_t *p = &gb->vram[addr - VRAM_ADDR];
+#endif
+            if (addr + 3 < 0xA000 && (((uintptr_t)p & 3) == 0))
+                return *(uint32_t *)p;
+
+            return (uint32_t)p[0]
+                 | ((uint32_t)p[1] << 8)
+                 | ((uint32_t)p[2] << 16)
+                 | ((uint32_t)p[3] << 24);
+        }
+
+        // --- External RAM / RTC
+        case 0xA:
+        case 0xB:
+            if (gb->mbc == 3 && gb->cart_ram_bank >= 0x08)
+            {
+                const uint8_t *p =
+                    &gb->rtc_latched.bytes[gb->cart_ram_bank - 0x08];
+                return (uint32_t)p[0]
+                     | ((uint32_t)p[1] << 8)
+                     | ((uint32_t)p[2] << 16)
+                     | ((uint32_t)p[3] << 24);
+            }
+            else if (gb->cart_ram && gb->enable_cart_ram)
+            {
+                uint16_t offset;
+                if (gb->mbc == 2)
+                {
+                    addr &= 0x1FF;
+                    offset = addr;
+                }
+                else if ((gb->cart_mode_select || gb->mbc != 1) &&
+                         gb->cart_ram_bank < gb->num_ram_banks)
+                {
+                    offset = addr - CART_RAM_ADDR +
+                             (gb->cart_ram_bank * CRAM_BANK_SIZE);
+                }
+                else
+                {
+                    offset = addr - CART_RAM_ADDR;
+                }
+
+                return (uint32_t)gb->gb_cart_ram_read(gb, offset)
+                     | ((uint32_t)gb->gb_cart_ram_read(gb, offset + 1) << 8)
+                     | ((uint32_t)gb->gb_cart_ram_read(gb, offset + 2) << 16)
+                     | ((uint32_t)gb->gb_cart_ram_read(gb, offset + 3) << 24);
+            }
+            return 0xFFFFFFFF;
+
+        // --- WRAM
+        case 0xC:
+        case 0xD:
+        {
+#if PEANUT_FULL_GBC_SUPPORT
+            if (gb->cgb.cgbMode && addr >= WRAM_1_ADDR)
+            {
+                uint8_t *p = &gb->wram[addr - gb->cgb.wramBankOffset];
+                if (((uintptr_t)p & 3) == 0)
+                    return *(uint32_t *)p;
+                return (uint32_t)p[0]
+                     | ((uint32_t)p[1] << 8)
+                     | ((uint32_t)p[2] << 16)
+                     | ((uint32_t)p[3] << 24);
+            }
+#endif
+            uint8_t *p = &gb->wram[addr - WRAM_0_ADDR];
+            if (((uintptr_t)p & 3) == 0)
+                return *(uint32_t *)p;
+            return (uint32_t)p[0]
+                 | ((uint32_t)p[1] << 8)
+                 | ((uint32_t)p[2] << 16)
+                 | ((uint32_t)p[3] << 24);
+        }
+
+        // --- Echo RAM
+        case 0xE:
+        {
+            uint8_t *p = &gb->wram[addr - ECHO_ADDR];
+            if (((uintptr_t)p & 3) == 0)
+                return *(uint32_t *)p;
+            return (uint32_t)p[0]
+                 | ((uint32_t)p[1] << 8)
+                 | ((uint32_t)p[2] << 16)
+                 | ((uint32_t)p[3] << 24);
+        }
+
+        // --- OAM / HRAM / IO
+        case 0xF:
+            if (addr < 0xFEA0)
+            {
+                uint8_t *p = &gb->oam[addr - OAM_ADDR];
+                if (((uintptr_t)p & 3) == 0)
+                    return *(uint32_t *)p;
+                return (uint32_t)p[0]
+                     | ((uint32_t)p[1] << 8)
+                     | ((uint32_t)p[2] << 16)
+                     | ((uint32_t)p[3] << 24);
+            }
+            else if (addr >= IO_ADDR)
+            {
+#if ENABLE_SOUND
+                if (addr >= 0xFF10 && addr <= 0xFF3F)
+                {
+                    uint32_t v = 0;
+                    for (int i = 0; i < 4; ++i)
+                        v |= ((uint32_t)audio_read(addr + i)) << (8 * i);
+                    return v;
+                }
+#endif
+                uint8_t *p = &gb->hram_io[addr - IO_ADDR];
+                if (((uintptr_t)p & 3) == 0)
+                    return *(uint32_t *)p;
+                return (uint32_t)p[0]
+                     | ((uint32_t)p[1] << 8)
+                     | ((uint32_t)p[2] << 16)
+                     | ((uint32_t)p[3] << 24);
+            }
+            return 0xFFFFFFFF;
+    }
+
+    (gb->gb_error)(gb, GB_INVALID_READ, addr);
+    PGB_UNREACHABLE();
+}
+#else
 uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
 {
     switch (WALNUT_GB_GET_MSN16(addr))
@@ -1316,6 +1483,7 @@ uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
     (gb->gb_error)(gb, GB_INVALID_READ, addr);
     WGB_UNREACHABLE();
 }
+#endif
 
 
 /**
