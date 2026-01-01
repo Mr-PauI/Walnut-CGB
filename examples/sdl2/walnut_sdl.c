@@ -2,13 +2,13 @@
  * MIT License
  * Copyright (c) 2018-2023 Mahyar Koshkouei
  *
- * An example of using the peanut_gb.h library. This example application uses
+ * An example of using the Walnut_gb.h library. This example application uses
  * SDL2 to draw the screen and get input.
  */
 
 #include <stdint.h>
 #include <stdlib.h>
-
+#define SDL_MAIN_HANDLED
 #include "SDL.h"
 
 #if defined(ENABLE_SOUND_BLARGG)
@@ -20,10 +20,13 @@
 uint8_t audio_read(uint16_t addr);
 void audio_write(uint16_t addr, uint8_t val);
 
-#include "../../peanut_gb.h"
+#ifdef WALNUT_CGB_H
+#warning "walnut_cgb.h already included"
+#endif
+#include "../../walnut_cgb.h"
 
 enum {
-	LOG_CATERGORY_PEANUTSDL = SDL_LOG_CATEGORY_CUSTOM
+	LOG_CATERGORY_WalnutSDL = SDL_LOG_CATEGORY_CUSTOM
 };
 
 struct priv_t
@@ -54,6 +57,52 @@ uint8_t gb_rom_read(struct gb_s *gb, const uint_fast32_t addr)
 {
 	const struct priv_t * const p = gb->direct.priv;
 	return p->rom[addr];
+}
+
+/**
+ * Returns a two bytes from the ROM file at the given address.
+ */
+uint16_t gb_rom_read_16bit(struct gb_s* gb, const uint_fast32_t addr) {
+	const uint8_t* src = &((const struct priv_t*)gb->direct.priv)->rom[addr];
+	// Alignment check, not required for all platforms. ESP32 series mcu flash memory and psram sources *require* this
+	if ((uintptr_t)src & 1) {
+		// fallback to safe 8-bit reads when not aligned
+		return ((uint16_t)src[0]) | ((uint16_t)src[1] << 8);
+	}
+	return *(uint16_t*)src;
+	/* ISO C version below, above may require -fno-strict-aliasing */
+	/*
+		const uint8_t *src = &((const struct priv_t *)gb->direct.priv)->rom[addr];
+		uint16_t val;
+		memcpy(&val, src, sizeof(val));
+		return val;
+	*/
+}
+
+/**
+ * Returns four bytes from the ROM file at the given address.
+ */
+uint32_t gb_rom_read_32bit(struct gb_s* gb, const uint_fast32_t addr) {
+	const uint8_t* src =
+		&((const struct priv_t*)gb->direct.priv)->rom[addr];
+
+	// Alignment check: ESP32 flash / PSRAM require 32-bit alignment
+	if ((uintptr_t)src & 3) {
+		// fallback to safe 8-bit reads when not aligned
+		return ((uint32_t)src[0]) |
+			((uint32_t)src[1] << 8) |
+			((uint32_t)src[2] << 16) |
+			((uint32_t)src[3] << 24);
+	}
+
+	return *(uint32_t*)src;
+
+	/* ISO C version below, above may require -fno-strict-aliasing */
+	/*
+	uint32_t val;
+	memcpy(&val, src, sizeof(val));
+	return val;
+	*/
 }
 
 /**
@@ -111,7 +160,7 @@ void read_cart_ram_file(const char *save_file_name, uint8_t **dest,
 	/* Allocate enough memory to hold save file. */
 	if((*dest = SDL_malloc(len)) == NULL)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"%d: %s", __LINE__, SDL_GetError());
 		exit(EXIT_FAILURE);
@@ -142,7 +191,7 @@ void write_cart_ram_file(const char *save_file_name, uint8_t **dest,
 
 	if((f = SDL_RWFromFile(save_file_name, "wb")) == NULL)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Unable to open save file: %s",
 				SDL_GetError());
@@ -193,7 +242,7 @@ void gb_error(struct gb_s *gb, const enum gb_error_e gb_err, const uint16_t addr
 		"Cart RAM saved to recovery.sav\n"
 		"Exiting.\n",
 		gb_err_str[gb_err], addr, location, instr_byte);
-	SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+	SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 			SDL_LOG_PRIORITY_CRITICAL,
 			"%s", error_msg);
 
@@ -374,7 +423,7 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 			{ 0x7FFF, 0x5294, 0x294A, 0x0000 },
 			{ 0x7FFF, 0x5294, 0x294A, 0x0000 }
 		};
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_INFO,
 				"No palette found for 0x%02X.", game_checksum);
 		memcpy(priv->selected_palette, palette, palette_bytes);
@@ -565,13 +614,27 @@ void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[160],
 		   const uint_fast8_t line)
 {
 	struct priv_t *priv = gb->direct.priv;
-
-	for(unsigned int x = 0; x < LCD_WIDTH; x++)
-	{
-		priv->fb[line][x] = priv->selected_palette
-				    [(pixels[x] & LCD_PALETTE_ALL) >> 4]
-				    [pixels[x] & 3];
+	uint16_t(*fb565)[LCD_WIDTH] = ((struct priv_t*)gb->direct.priv)->fb;
+	if (gb->cgb.cgbMode)
+	{   // Gameboy Color RGB565 rendering   
+		for (unsigned int x = 0; x < LCD_WIDTH; x++)
+		{
+			fb565[line][x] = gb->cgb.fixPalette[pixels[x]]; // map colours from current palette   
+		}
 	}
+#if WALNUT_GB_12_COLOUR  
+	else  // some titles have 12-color mappings. Some common mappings can be found in the sgb.h file
+	{ // Using 12-colour palette  
+		for (unsigned int x = 0; x < LCD_WIDTH; x++)
+			fb565[line][x] = priv->selected_palette[((pixels[x] & 18) >> 1) | (pixels[x] & 3)]; // A 12-element uint16_t array  
+	}
+#else
+	else
+	{ // Using a 4 colour palette  
+		for (unsigned int x = 0; x < LCD_WIDTH; x++)
+			fb565[line][x] = priv->selected_palette[(pixels[x]) & 3]; // A 4-element uint16_t array  
+	}
+#endif
 }
 #endif
 
@@ -639,7 +702,7 @@ int main(int argc, char **argv)
 	char *save_file_name = NULL;
 	int ret = EXIT_SUCCESS;
 
-	SDL_LogSetPriority(LOG_CATERGORY_PEANUTSDL, SDL_LOG_PRIORITY_INFO);
+	SDL_LogSetPriority(LOG_CATERGORY_WalnutSDL, SDL_LOG_PRIORITY_INFO);
 
 	/* Enable Hi-DPI to stop blurry game image. */
 #ifdef SDL_HINT_WINDOWS_DPI_AWARENESS
@@ -657,7 +720,7 @@ int main(int argc, char **argv)
 		goto out;
 	}
 
-	window = SDL_CreateWindow("Peanut-SDL: Opening File",
+	window = SDL_CreateWindow("Walnut-SDL: Opening File",
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
 			LCD_WIDTH * 2, LCD_HEIGHT * 2,
@@ -665,7 +728,7 @@ int main(int argc, char **argv)
 
 	if(window == NULL)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Could not create window: %s",
 				SDL_GetError());
@@ -715,18 +778,18 @@ int main(int argc, char **argv)
 
 	default:
 #if ENABLE_FILE_GUI
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Usage: %s [ROM] [SAVE]", argv[0]);
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"A file picker is presented if ROM is not given.");
 #else
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Usage: %s ROM [SAVE]\n", argv[0]);
 #endif
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"SAVE is set by default if not provided.");
 		ret = EXIT_FAILURE;
@@ -736,7 +799,7 @@ int main(int argc, char **argv)
 	/* Copy input ROM file to allocated memory. */
 	if((priv.rom = SDL_LoadFile(rom_file_name, NULL)) == NULL)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"%d: %s", __LINE__, SDL_GetError());
 		ret = EXIT_FAILURE;
@@ -757,7 +820,7 @@ int main(int argc, char **argv)
 
 		if(save_file_name == NULL)
 		{
-			SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+			SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 					SDL_LOG_PRIORITY_CRITICAL,
 					"%d: %s", __LINE__, SDL_GetError());
 			ret = EXIT_FAILURE;
@@ -783,8 +846,7 @@ int main(int argc, char **argv)
 	/* TODO: Sanity check input GB file. */
 
 	/* Initialise emulator context. */
-	gb_ret = gb_init(&gb, &gb_rom_read, &gb_cart_ram_read, &gb_cart_ram_write,
-			 &gb_error, &priv);
+	gb_ret = gb_init(&gb, &gb_rom_read, &gb_rom_read_16bit, &gb_rom_read_32bit, &gb_cart_ram_read, &gb_cart_ram_write, &gb_error, &priv);
 
 	switch(gb_ret)
 	{
@@ -792,21 +854,21 @@ int main(int argc, char **argv)
 		break;
 
 	case GB_INIT_CARTRIDGE_UNSUPPORTED:
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Unsupported cartridge.");
 		ret = EXIT_FAILURE;
 		goto out;
 
 	case GB_INIT_INVALID_CHECKSUM:
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Invalid ROM: Checksum failure.");
 		ret = EXIT_FAILURE;
 		goto out;
 
 	default:
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Unknown error: %d", gb_ret);
 		ret = EXIT_FAILURE;
@@ -816,13 +878,13 @@ int main(int argc, char **argv)
 	/* Copy dmg_boot.bin boot ROM file to allocated memory. */
 	if((priv.bootrom = SDL_LoadFile("dmg_boot.bin", NULL)) == NULL)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_INFO,
 				"No dmg_boot.bin file found; disabling boot ROM");
 	}
 	else
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_INFO,
 				"boot ROM enabled");
 		gb_set_bootrom(&gb, gb_bootrom_read);
@@ -832,7 +894,7 @@ int main(int argc, char **argv)
 	/* Load Save File. */
 	if(gb_get_save_size_s(&gb, &priv.save_size) < 0)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Unable to get save size: %s",
 				SDL_GetError());
@@ -897,14 +959,14 @@ int main(int argc, char **argv)
 		want.callback = audio_callback;
 		want.userdata = NULL;
 
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_INFO,
 				"Audio driver: %s",
 				SDL_GetAudioDeviceName(0, 0));
 
 		if((dev = SDL_OpenAudioDevice(NULL, 0, &want, &have, 0)) == 0)
 		{
-			SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+			SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 					SDL_LOG_PRIORITY_CRITICAL,
 					"SDL could not open audio device: %s",
 					SDL_GetError());
@@ -925,7 +987,7 @@ int main(int argc, char **argv)
 
 	if(SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt") < 0)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_INFO,
 				"Unable to assign joystick mappings: %s\n",
 				SDL_GetError());
@@ -941,7 +1003,7 @@ int main(int argc, char **argv)
 
 		if(controller)
 		{
-			SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+			SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 					SDL_LOG_PRIORITY_INFO,
 					"Game Controller %s connected.",
 					SDL_GameControllerName(controller));
@@ -949,7 +1011,7 @@ int main(int argc, char **argv)
 		}
 		else
 		{
-			SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+			SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 					SDL_LOG_PRIORITY_INFO,
 					"Could not open game controller %i: %s\n",
 					i, SDL_GetError());
@@ -957,10 +1019,10 @@ int main(int argc, char **argv)
 	}
 
 	{
-		/* 12 for "Peanut-SDL: " and a maximum of 16 for the title. */
-		char title_str[28] = "Peanut-SDL: ";
+		/* 12 for "Walnut-SDL: " and a maximum of 16 for the title. */
+		char title_str[28] = "Walnut-SDL: ";
 		gb_get_rom_name(&gb, title_str + 12);
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_INFO,
 				"%s",
 				title_str);
@@ -972,7 +1034,7 @@ int main(int argc, char **argv)
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 	if(renderer == NULL)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Could not create renderer: %s",
 				SDL_GetError());
@@ -982,7 +1044,7 @@ int main(int argc, char **argv)
 
 	if(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255) < 0)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Renderer could not draw color: %s",
 				SDL_GetError());
@@ -992,7 +1054,7 @@ int main(int argc, char **argv)
 
 	if(SDL_RenderClear(renderer) < 0)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Renderer could not clear: %s",
 				SDL_GetError());
@@ -1007,13 +1069,13 @@ int main(int argc, char **argv)
 	SDL_RenderSetIntegerScale(renderer, 1);
 
 	texture = SDL_CreateTexture(renderer,
-				    SDL_PIXELFORMAT_RGB555,
+				    SDL_PIXELFORMAT_RGB565,
 				    SDL_TEXTUREACCESS_STREAMING,
 				    LCD_WIDTH, LCD_HEIGHT);
 
 	if(texture == NULL)
 	{
-		SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_CRITICAL,
 				"Texture could not be created: %s",
 				SDL_GetError());
@@ -1200,11 +1262,11 @@ int main(int argc, char **argv)
 					dump_bmp = ~dump_bmp;
 
 					if(dump_bmp)
-						SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+						SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 								SDL_LOG_PRIORITY_INFO,
 								"Dumping frames");
 					else
-						SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+						SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 								SDL_LOG_PRIORITY_INFO,
 								"Stopped dumping frames");
 
@@ -1312,16 +1374,18 @@ int main(int argc, char **argv)
 		}
 
 		/* Execute CPU cycles until the screen has to be redrawn. */
-		gb_run_frame(&gb);
+		gb_run_frame_dualfetch(&gb);
+		// gb_run_frame(&gb); // <- This is kept in place for compatibility, the original Peanut-GB dispatch method
 
 		/* Tick the internal RTC when 1 second has passed. */
-		rtc_timer += target_speed_ms / (double) fast_mode;
+		// Depracated, ticked internally
+		//rtc_timer += target_speed_ms / (double) fast_mode;
 
-		if(rtc_timer >= 1000.0)
-		{
-			rtc_timer -= 1000.0;
-			gb_tick_rtc(&gb);
-		}
+		//if(rtc_timer >= 1000.0)
+		//{
+		//	rtc_timer -= 1000.0;
+		//	gb_tick_rtc(&gb);
+		//}
 
 		/* Skip frames during fast mode. */
 		if(fast_mode_timer > 1)
@@ -1350,12 +1414,12 @@ int main(int argc, char **argv)
 		{
 			if(save_lcd_bmp(&gb, priv.fb) != 0)
 			{
-				SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+				SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 					       SDL_LOG_PRIORITY_ERROR,
 					       "Failure dumping frame: %s",
 					       SDL_GetError());
 				dump_bmp = 0;
-				SDL_LogMessage(LOG_CATERGORY_PEANUTSDL,
+				SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 					       SDL_LOG_PRIORITY_INFO,
 					       "Stopped dumping frames");
 			}
