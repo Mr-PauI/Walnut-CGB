@@ -1,5 +1,4 @@
-Note: I haven’t yet updated the SDL2 example; however, with minimal adjustments they can be made to work with Walnut-CGB.
-Please see the Arduino example for a complete working example of Walnut-CGB.
+Note: I haven’t yet fully updated the SDL2 example; CGB output is correct, however *the DMG palettes are currently in rgb555 and must be converted to rgb565 for correct DMG output*
   
 Walnut-CGB is mostly a drop-in replacement for Peanut-GB. The only API difference is the requirement to provide [read16](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_16bit()) and [read32](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_32bit()) functions during initialization. Otherwise, it behaves like Peanut-GB when the same feature flags are enabled.  
   
@@ -52,7 +51,8 @@ This is a basic Walnut-CGB Arduino example for the M5Stack Cardputer.
 - Internal flash storage can be used on ESP32/ESP32-S3 as long as alignment rules are observed.
 - ISO C memory functions are included in comments for other platforms.
 
-## SDL2 Example - NOT YET UPDATED, see above example for the time being or use instructions at start of readme to implement.
+## SDL2 Example - PARTIALLY UPDATED
+*the DMG palettes are currently in rgb555 and must be converted to rgb565 for correct DMG output*
 
 The flagship example implementation is given in walnut_sdl.c, which uses SDL2 to
 draw the screen and take input. Run `cmake` or `make` in the ./examples/sdl2/
