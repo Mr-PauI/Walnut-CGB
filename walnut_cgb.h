@@ -902,7 +902,7 @@ struct gb_s
 #ifdef WALNUT_GB_16BIT_ALIGNED
 uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
 {
-    switch (PEANUT_GB_GET_MSN16(addr))
+    switch (WALNUT_GB_GET_MSN16(addr))
     {
         // --- Boot ROM / Fixed ROM 0
         case 0x0:
@@ -918,7 +918,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
         case 0x1:
         case 0x2:
         case 0x3:
-            return gb_rom_read16_internal_(addr);
+            return gb->gb_rom_read_16bit(gb, addr);
 
         // --- Switchable ROM banks (0x4000–0x7FFF)
         case 0x4:
@@ -927,7 +927,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
         case 0x7:
         {
             uint32_t bank_offset = (gb->selected_rom_bank - 1) * ROM_BANK_SIZE;
-            return gb_rom_read16_internal_(addr + bank_offset);
+            return gb->gb_rom_read_16bit(gb, addr + bank_offset);
         }
 
         // --- VRAM (0x8000–0x9FFF)
@@ -1028,7 +1028,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
     }
 
     (gb->gb_error)(gb, GB_INVALID_READ, addr);
-    PGB_UNREACHABLE();
+    WGB_UNREACHABLE();
 }
 #else
 uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
@@ -1180,7 +1180,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
 #if WALNUT_GB_32BIT_ALIGNED
 uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
 {
-    switch (PEANUT_GB_GET_MSN16(addr))
+    switch (WALNUT_GB_GET_MSN16(addr))
     {
         // --- Boot ROM / Fixed ROM 0
         case 0x0:
@@ -1201,7 +1201,7 @@ uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
         case 0x1:
         case 0x2:
         case 0x3:
-            return gb_rom_read32_internal_(addr);
+            return gb->gb_rom_read_32bit(gb, addr);
 
         // --- Switchable ROM banks
         case 0x4:
@@ -1210,7 +1210,7 @@ uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
         case 0x7:
         {
             uint32_t bank_offset = (gb->selected_rom_bank - 1) * ROM_BANK_SIZE;
-            return gb_rom_read32_internal_(addr + bank_offset);
+            return gb->gb_rom_read_32bit(gb, addr + bank_offset);
         }
 
         // --- VRAM
@@ -1341,7 +1341,7 @@ uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
     }
 
     (gb->gb_error)(gb, GB_INVALID_READ, addr);
-    PGB_UNREACHABLE();
+    WGB_UNREACHABLE();
 }
 #else
 uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
@@ -2255,7 +2255,7 @@ void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
     uint8_t *dst = NULL;
 
-    switch (PEANUT_GB_GET_MSN16(addr)) {
+    switch (WALNUT_GB_GET_MSN16(addr)) {
         case 0x8: // VRAM
         case 0x9:
 #if PEANUT_FULL_GBC_SUPPORT
@@ -7777,12 +7777,16 @@ void gb_set_rtc(struct gb_s *gb, const struct tm * const time)
 /** Function prototypes: Required functions **/
 /**
  * Initialises the emulator context to a known state. Call this before calling
- * any other peanut-gb function.
+ * any other walnut-gb function.
  * To reset the emulator, you can call gb_reset() instead.
  *
  * \param gb	Allocated emulator context. Must not be NULL.
  * \param gb_rom_read Pointer to function that reads ROM data. ROM banking is
  * 		already handled by Walnut-GB. Must not be NULL.
+ * \param gb_rom_read16 Pointer to function that reads ROM data in 16-bit chunks. ROM banking is
+ *      already handled by Walnut-GB. Must not be NULL.
+  * \param gb_rom_read32 pointer to function that reads ROM data in 32-bit chunks. ROM banking is
+ *      already handled by Walnut-GB. Must not be NULL.
  * \param gb_cart_ram_read Pointer to function that reads Cart RAM. Must not be
  * 		NULL.
  * \param gb_cart_ram_write Pointer to function to writes to Cart RAM. Must not
@@ -7794,13 +7798,14 @@ void gb_set_rtc(struct gb_s *gb, const struct tm * const time)
  * 		NULL if unused.
  * \returns	0 on success or an enum that describes the error.
  */
-enum gb_init_error_e gb_init(struct gb_s *gb,
-			     uint8_t (*gb_rom_read)(struct gb_s*, const uint_fast32_t),
-			     uint8_t (*gb_cart_ram_read)(struct gb_s*, const uint_fast32_t),
-			     void (*gb_cart_ram_write)(struct gb_s*, const uint_fast32_t, const uint8_t),
-			     void (*gb_error)(struct gb_s*, const enum gb_error_e, const uint16_t),
-			     void *priv);
-
+enum gb_init_error_e gb_init(struct gb_s* gb,
+	uint8_t(*gb_rom_read)(struct gb_s*, const uint_fast32_t),
+	uint16_t(*gb_rom_read16)(struct gb_s*, const uint_fast32_t),
+	uint32_t(*gb_rom_read32)(struct gb_s*, const uint_fast32_t),
+	uint8_t(*gb_cart_ram_read)(struct gb_s*, const uint_fast32_t),
+	void (*gb_cart_ram_write)(struct gb_s*, const uint_fast32_t, const uint8_t),
+	void (*gb_error)(struct gb_s*, const enum gb_error_e, const uint16_t),
+	void* priv);
 /**
  * Executes the emulator and runs for the duration of time equal to one frame.
  *
