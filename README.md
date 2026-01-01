@@ -1,17 +1,8 @@
 Note: I haven’t yet fully updated the SDL2 example; CGB output is correct, however *the DMG palettes are currently in rgb555 and must be converted to rgb565 for correct DMG output*
-  
-Walnut-CGB is mostly a drop-in replacement for Peanut-GB. The only API difference is the requirement to provide [read16](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_16bit()) and [read32](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_rom_read_32bit()) functions during initialization. Otherwise, it behaves like Peanut-GB when the same feature flags are enabled.  
-  
-Important: To use the new dual-fetch CPU execution model, calls to gb_run_frame() must be replaced with [gb_run_frame_dualfetch()](https://github.com/Mr-PauI/Walnut-CGB/wiki/gb_run_frame_dualfetch()). If this change is not made, Walnut-CGB will continue to use the original 8-bit Peanut-GB execution core (with any enabled DMA optimizations), and no dispatch-model performance improvements will be realized.  
-  
-Walnut-CGB enables CGB support by default. Unlike Peanut-GB’s CGB branch, Walnut-CGB outputs RGB565 for Game Boy Color games.  
-  
-The [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki) contains further details on implementation specifics, execution models, and framebuffer handling. Several code examples have been added to this section and I will continue to expand it.  
-  
 # Walnut-CGB  
   
 Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of the more portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB).
-This is a full reimplementation of the core to support native 16-bit and 32-bit operations, processing instructions with a [dual-fetch chained architecture](https://github.com/Mr-PauI/Walnut-CGB/wiki/CPU-opcode-dispatch-model). A significant deviation from the Peanut-GB cpu opcode dispatch imlpementation.
+This is a full reimplementation of the core to support native 16-bit and 32-bit operations, processing instructions with a [dual-fetch chained architecture](https://github.com/Mr-PauI/Walnut-CGB/wiki/CPU-opcode-dispatch-model). A significant deviation from the Peanut-GB cpu opcode dispatch imlpementation. See [Migrating from Peanut-GB](Migrating from Peanut-GB) for details for porting existing implementations.
 
 It includes all DMG updates from its main branch as well as the CGB support fork integrated into it.
 
@@ -31,6 +22,12 @@ It includes all DMG updates from its main branch as well as the CGB support fork
   required.
   A fast audio processing unit (APU) library is included in this repository at
   [https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2/minigb_apu](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2/minigb_apu) .
+
+## Migrating from Peanut-GB
+
+Walnut-CGB is mostly a drop-in replacement for Peanut-GB. There are minor API differences documented [here](https://github.com/Mr-PauI/Walnut-CGB/wiki/Migrating-from-Peanut%E2%80%90GB).
+  
+The [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki) contains further details on implementation specifics, execution models, and framebuffer handling. Several code examples have been added to this section and I will continue to expand it.  
 
 ## Caveats
 
