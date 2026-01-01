@@ -51,7 +51,7 @@ This is a basic Walnut-CGB Arduino example for the M5Stack Cardputer.
 - Internal flash storage can be used on ESP32/ESP32-S3 as long as alignment rules are observed.
 - ISO C memory functions are included in comments for other platforms.
 
-## SDL2 Example - PARTIALLY UPDATED
+## [SDL2 Example](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2) - PARTIALLY UPDATED
 *the DMG palettes are currently in rgb555 and must be converted to rgb565 for correct DMG output*
 
 The flagship example implementation is given in walnut_sdl.c, which uses SDL2 to
