@@ -1178,7 +1178,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
 #endif
 
 #if WALNUT_GB_32BIT_ALIGNED
-IRAM_ATTR uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
+uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
 {
     switch (PEANUT_GB_GET_MSN16(addr))
     {
@@ -9893,6 +9893,7 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
+
 
 
 
