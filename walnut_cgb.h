@@ -1877,9 +1877,7 @@ void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 #endif
 			return;
 		}
-#if WALNUT_FULL_GBC_SUPPORT
-		uint16_t fixPaletteTemp;
-#endif
+
 		/* IO and Interrupts. */
 		switch(WALNUT_GB_GET_LSB16(addr))
 		{
@@ -2651,8 +2649,9 @@ void __gb_draw_line(struct gb_s *gb)
 {
 	uint8_t pixels[160] = {0};
 	const uint8_t hram_io_ly = gb->hram_io[IO_LY];
+#if WALNUT_FULL_GBC_SUPPORT
 	const uint8_t cgbMode = gb->cgb.cgbMode;
-
+#endif
 	/* If LCD not initialised by front-end, don't render anything. */
 	if(gb->display.lcd_draw_line == NULL)
 		return;
@@ -3250,7 +3249,7 @@ static inline void __gb_step_cpu(struct gb_s *gb)
 	/* Obtain opcode */
 	
 	oppair = __gb_read16(gb, gb->cpu_reg.pc.reg++);
-	opcode = oppair; // auto-truncate
+	opcode = (uint8_t)oppair; // auto-truncate
 #if (WALNUT_GB_SAFE_DUALFETCH_DMA || WALNUT_GB_SAFE_DUALFETCH_MBC)
   gb->prefetch_invalid=false;
 #endif
