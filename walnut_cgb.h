@@ -71,10 +71,10 @@
 // Like the above, this can break compatibility with some games and is disabled by default.
 #define WALNUT_GB_16_BIT_OPS 0
 // WALNUT_GB_16BIT_DMA uses 16-bit(and 32-bit) dma transfers rather than byte-by-byte, only one mode can be used at a time. The gb_read_32bit function is used for the 32-bit DMA, otherwise that function will not be called
-//  **Note:** The current implementation of 16-bit and 32-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3). On some platforms, you may need to compile with `-fno-strict-aliasing` to avoid issues with pointer aliasing.
-// an alignment aware and 8-bit read/write fallback mode are in development, If required for your implementation feel free to make an issue(or pull request) and I can make it more of a priority.
+//  **Note:** The current implementation of 16-bit DMA is limited to systems that do not have aliasing or alignment restrictions when writing data (e.g., ESP32-S3). On some platforms, you may need to compile with `-fno-strict-aliasing` to avoid issues with pointer aliasing.
 #define WALNUT_GB_16BIT_DMA 0
 #define WALNUT_GB_32BIT_DMA 1
+// Uses alignment aware read/writes with an 8-bit fallback (16-bit alignment implemented for read path only in this version)
 #define WALNUT_GB_16BIT_ALIGNED 1
 #define WALNUT_GB_32BIT_ALIGNED 1
 #define WALNUT_GB_RGB565_BIGENDIAN 0
@@ -899,7 +899,7 @@ struct gb_s
 #define IO_STAT_MODE_LCD_DRAW		3
 #define IO_STAT_MODE_VBLANK_OR_TRANSFER_MASK 0x1
 
-#ifdef WALNUT_GB_16BIT_ALIGNED
+#if WALNUT_GB_16BIT_ALIGNED
 uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
 {
     switch (WALNUT_GB_GET_MSN16(addr))
@@ -2251,7 +2251,7 @@ void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 	return;
 }
 
-#ifdef WALNUT_GB_32BIT_ALIGNED
+#if WALNUT_GB_32BIT_ALIGNED
 void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
     uint8_t *dst = NULL;
 
@@ -9898,6 +9898,7 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
+
 
 
 
