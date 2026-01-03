@@ -1,4 +1,4 @@
-/**
+﻿/**
  * MIT License
  * Copyright (c) 2018-2023 Mahyar Koshkouei
  *
@@ -21,6 +21,7 @@ uint8_t audio_read(uint16_t addr);
 void audio_write(uint16_t addr, uint8_t val);
 
 #include "../../walnut_cgb.h"
+#include "../../extras/sgb.h"
 
 enum {
 	LOG_CATERGORY_WalnutSDL = SDL_LOG_CATEGORY_CUSTOM
@@ -251,6 +252,41 @@ void gb_error(struct gb_s *gb, const enum gb_error_e gb_err, const uint16_t addr
 	exit(EXIT_FAILURE);
 }
 
+// Used for converting sgb.h and cgb.h palettes 
+static inline uint16_t rgb888_to_rgb555(uint32_t rgb)
+{
+	uint8_t r8 = (rgb >> 16) & 0xFF;
+	uint8_t g8 = (rgb >> 8) & 0xFF;
+	uint8_t b8 = (rgb >> 0) & 0xFF;
+
+	// Scale 8-bit to 5-bit with rounding
+	uint16_t r5 = (r8 * 31 + 127) / 255;
+	uint16_t g5 = (g8 * 31 + 127) / 255;
+	uint16_t b5 = (b8 * 31 + 127) / 255;
+
+	return (r5 << 10) | (g5 << 5) | b5;
+}
+
+/**
+ * Converts the SGB palette at a given index to rgb555 and
+ * copies to the dst array
+ * TODO: Not all checksums are programmed in yet because I'm lazy.
+ */
+void sgb_palette_to_rgb555(
+	uint32_t palette_index,
+	uint16_t* dst_rgb555
+)
+{
+	const uint32_t* src =
+		&default32sgb_palettes[palette_index * 12];
+
+	for (unsigned i = 0; i < 12; i++)
+	{
+		dst_rgb555[i] = rgb888_to_rgb555(src[i]);
+	}
+}
+
+
 /**
  * Automatically assigns a colour palette to the game using a given game
  * checksum.
@@ -266,13 +302,7 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 	case 0x71:
 	case 0xFF:
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7FFF, 0x7E60, 0x7C00, 0x0000 }, /* OBJ0 */
-			{ 0x7FFF, 0x7E60, 0x7C00, 0x0000 }, /* OBJ1 */
-			{ 0x7FFF, 0x7E60, 0x7C00, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(0, priv->selected_palette); // Use SGB Palette 0
 		break;
 	}
 
@@ -281,13 +311,7 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 	case 0xDB:
 	case 0x95: /* Not officially */
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7FFF, 0x7FE0, 0x7C00, 0x0000 }, /* OBJ0 */
-			{ 0x7FFF, 0x7FE0, 0x7C00, 0x0000 }, /* OBJ1 */
-			{ 0x7FFF, 0x7FE0, 0x7C00, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(16, priv->selected_palette); // Use SGB Palette 16
 		break;
 	}
 
@@ -311,39 +335,21 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 	/* Pokemon Blue Star */
 	case 0xD8:
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7FFF, 0x7E10, 0x48E7, 0x0000 }, /* OBJ0 */
-			{ 0x7FFF, 0x329F, 0x001F, 0x0000 }, /* OBJ1 */
-			{ 0x7FFF, 0x329F, 0x001F, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(12, priv->selected_palette); // Use SGB Palette 12
 		break;
 	}
 
 	/* Pokemon Red */
 	case 0x14:
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7FFF, 0x3FE6, 0x0200, 0x0000 }, /* OBJ0 */
-			{ 0x7FFF, 0x7E10, 0x48E7, 0x0000 }, /* OBJ1 */
-			{ 0x7FFF, 0x7E10, 0x48E7, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(7, priv->selected_palette); // Use SGB Palette 7
 		break;
 	}
 
 	/* Pokemon Red Star */
 	case 0x8B:
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7FFF, 0x7E10, 0x48E7, 0x0000 }, /* OBJ0 */
-			{ 0x7FFF, 0x329F, 0x001F, 0x0000 }, /* OBJ1 */
-			{ 0x7FFF, 0x3FE6, 0x0200, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(7, priv->selected_palette); // Use SGB Palette 7
 		break;
 	}
 
@@ -353,13 +359,7 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 	case 0x5C:
 	case 0xB3:
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7D8A, 0x6800, 0x3000, 0x0000 }, /* OBJ0 */
-			{ 0x001F, 0x7FFF, 0x7FEF, 0x021F }, /* OBJ1 */
-			{ 0x527F, 0x7FE0, 0x0180, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(2, priv->selected_palette); // Use SGB Palette 2
 		break;
 	}
 
@@ -382,17 +382,11 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 	/* Link's Awakening */
 	case 0x70:
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7FFF, 0x03E0, 0x1A00, 0x0120 }, /* OBJ0 */
-			{ 0x7FFF, 0x329F, 0x001F, 0x001F }, /* OBJ1 */
-			{ 0x7FFF, 0x7E10, 0x48E7, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(4, priv->selected_palette); // Use SGB Palette 4
 		break;
 	}
 
-	/* Mega Man [1/2/3] & others I don't care about. */
+	/* Mega Man [1/2/3] & others */
 	case 0x01:
 	case 0x10:
 	case 0x29:
@@ -402,23 +396,18 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 	case 0x6D:
 	case 0xF6:
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7FFF, 0x329F, 0x001F, 0x0000 }, /* OBJ0 */
-			{ 0x7FFF, 0x3FE6, 0x0200, 0x0000 }, /* OBJ1 */
-			{ 0x7FFF, 0x7EAC, 0x40C0, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(36, priv->selected_palette); // Use SGB Palette 36
 		break;
 	}
 
 	default:
 	{
+		
 		const uint16_t palette[3][4] =
 		{
-			{ 0x7FFF, 0x5294, 0x294A, 0x0000 },
-			{ 0x7FFF, 0x5294, 0x294A, 0x0000 },
-			{ 0x7FFF, 0x5294, 0x294A, 0x0000 }
+			{ 0x3E02 , 0x2DE8, 0x1D69, 0x1507 },
+			{ 0x3E02 , 0x2DE8, 0x1D69, 0x1507},
+			{ 0x3E02 , 0x2DE8, 0x1D69, 0x1507 }
 		};
 		SDL_LogMessage(LOG_CATERGORY_WalnutSDL,
 				SDL_LOG_PRIORITY_INFO,
