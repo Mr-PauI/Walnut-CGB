@@ -20,9 +20,6 @@
 uint8_t audio_read(uint16_t addr);
 void audio_write(uint16_t addr, uint8_t val);
 
-#ifdef WALNUT_CGB_H
-#warning "walnut_cgb.h already included"
-#endif
 #include "../../walnut_cgb.h"
 
 enum {
@@ -44,7 +41,7 @@ struct priv_t
 	uint8_t *bootrom;
 
 	/* Colour palette for each BG, OBJ0, and OBJ1. */
-	uint16_t selected_palette[3][4];
+	uint16_t selected_palette[12];
 	uint16_t fb[LCD_HEIGHT][LCD_WIDTH];
 };
 
@@ -608,6 +605,24 @@ void manual_assign_palette(struct priv_t *priv, uint8_t selection)
 
 #if ENABLE_LCD
 /**
+ * Converts a single RGB565 color to RGB555 with proper scaling.
+ */
+static inline uint16_t rgb565_to_rgb555(uint16_t c565)
+{
+	// Extract components
+	uint16_t r5 = (c565 >> 11) & 0x1F;
+	uint16_t g6 = (c565 >> 5) & 0x3F;
+	uint16_t b5 = c565 & 0x1F;
+
+	// Scale 6-bit green to 5-bit (accurate)
+	uint16_t g5 = (g6 * 31 + 31 / 2) / 63; // rounding
+
+	// Pack RGB555 (bits: RRRRRGGGGGBBBBB)
+	uint16_t c555 = (r5 << 10) | (g5 << 5) | b5;
+
+	return c555;
+}
+/**
  * Draws scanline into framebuffer.
  */
 void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[160],
@@ -619,7 +634,7 @@ void lcd_draw_line(struct gb_s *gb, const uint8_t pixels[160],
 	{   // Gameboy Color RGB565 rendering   
 		for (unsigned int x = 0; x < LCD_WIDTH; x++)
 		{
-			fb565[line][x] = gb->cgb.fixPalette[pixels[x]]; // map colours from current palette   
+			fb565[line][x] = rgb565_to_rgb555(gb->cgb.fixPalette[pixels[x]]); // map colours from current palette   
 		}
 	}
 #if WALNUT_GB_12_COLOUR  
@@ -724,7 +739,7 @@ int main(int argc, char **argv)
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
 			LCD_WIDTH * 2, LCD_HEIGHT * 2,
-			SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS);
+		    SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_FOCUS);
 
 	if(window == NULL)
 	{
@@ -1069,7 +1084,7 @@ int main(int argc, char **argv)
 	SDL_RenderSetIntegerScale(renderer, 1);
 
 	texture = SDL_CreateTexture(renderer,
-				    SDL_PIXELFORMAT_RGB565,
+				    SDL_PIXELFORMAT_RGB555,
 				    SDL_TEXTUREACCESS_STREAMING,
 				    LCD_WIDTH, LCD_HEIGHT);
 
