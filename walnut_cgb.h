@@ -144,8 +144,13 @@ void __gb_step_cpu_x(struct gb_s *gb);
 # define WALNUT_GB_USE_INTRINSICS 1
 #endif
 
+/* Enables Gameboy Color support, requires WALNUT_GB_12_COLOUR; similarly if disabled, WALNUT_GB_12_COLOUR must also be disbaled*/
 #ifndef WALNUT_FULL_GBC_SUPPORT
 # define WALNUT_FULL_GBC_SUPPORT 1
+#endif
+
+#if (WALNUT_GB_12_COLOUR != WALNUT_FULL_GBC_SUPPORT)
+#error "WALNUT_GB_12_COLOUR and WALNUT_FULL_GBC_SUPPORT must both be enabled or both be disabled"
 #endif
 
 /* Only include function prototypes. At least one file must *not* have this
@@ -3585,7 +3590,7 @@ static inline void __gb_step_cpu(struct gb_s *gb)
 		if((a & 0x100) == 0x100)
 			gb->cpu_reg.f.f_bits.c = 1;
 
-		gb->cpu_reg.a = a;
+		gb->cpu_reg.a = (uint8_t)a;
 		gb->cpu_reg.f.f_bits.z = (gb->cpu_reg.a == 0);
 		gb->cpu_reg.f.f_bits.h = 0;
 		opcode = (uint8_t)(oppair >> 8);
@@ -5762,7 +5767,7 @@ static inline void __gb_step_cpu(struct gb_s *gb)
 		if((a & 0x100) == 0x100)
 			gb->cpu_reg.f.f_bits.c = 1;
 
-		gb->cpu_reg.a = a;
+		gb->cpu_reg.a = (uint8_t)a;
 		gb->cpu_reg.f.f_bits.z = (gb->cpu_reg.a == 0);
 		gb->cpu_reg.f.f_bits.h = 0;
 
@@ -8275,7 +8280,7 @@ void __gb_step_cpu_x(struct gb_s *gb)
 		if((a & 0x100) == 0x100)
 			gb->cpu_reg.f.f_bits.c = 1;
 
-		gb->cpu_reg.a = a;
+		gb->cpu_reg.a = (uint8_t)a;
 		gb->cpu_reg.f.f_bits.z = (gb->cpu_reg.a == 0);
 		gb->cpu_reg.f.f_bits.h = 0;
 
