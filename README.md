@@ -1,6 +1,3 @@
-Note: I haven’t yet fully updated the SDL2 example; CGB output is correct, however *the DMG palettes are currently in rgb555 and must be converted to rgb565 for correct DMG output*
-# Walnut-CGB  
-  
 Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of the more portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB).
 This is a full reimplementation of the core to support native 16-bit and 32-bit operations, processing instructions with a [dual-fetch chained architecture](https://github.com/Mr-PauI/Walnut-CGB/wiki/CPU-opcode-dispatch-model). A significant deviation from the Peanut-GB cpu opcode dispatch imlpementation. See [Migrating from Peanut-GB](Migrating from Peanut-GB) for details for porting existing implementations.
 
@@ -48,8 +45,7 @@ This is a basic Walnut-CGB Arduino example for the M5Stack Cardputer.
 - Internal flash storage can be used on ESP32/ESP32-S3 as long as alignment rules are observed.
 - ISO C memory functions are included in comments for other platforms.
 
-## [SDL2 Example](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2) - PARTIALLY UPDATED
-*the DMG palettes are currently in rgb555 and must be converted to rgb565 for correct DMG output*
+## [SDL2 Example](https://github.com/Mr-PauI/Walnut-CGB/tree/master/examples/sdl2)
 
 The flagship example implementation is given in walnut_sdl.c, which uses SDL2 to
 draw the screen and take input. Run `cmake` or `make` in the ./examples/sdl2/
