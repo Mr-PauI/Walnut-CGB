@@ -12,11 +12,11 @@
 // the SGB ram,audio and dynamic palette and border features.
 #define default32sgb_palettes_count 32
 const uint32_t default32sgb_palettes[] = {
-// 0 1-A (Balloon Kid)
+// 0 1-A (Balloon Kid) 
 0xFFEFCE, 0xDE944A, 0xAD2921, 0x311852,
 0xFFEFCE, 0xDE944A, 0xAD2921, 0x311852,
 0xFFEFCE, 0xDE944A, 0xAD2921, 0x311852,
-// 1 1-B (Wario Land) Kirbys Pinball Land
+// 1 1-B (Wario Land) 
 0xDEDEC6, 0xCEB573, 0xB55210, 0x000000,
 0xDEDEC6, 0xCEB573, 0xB55210, 0x000000,
 0xDEDEC6, 0xCEB573, 0xB55210, 0x000000,
@@ -40,11 +40,11 @@ const uint32_t default32sgb_palettes[] = {
 0x000052, 0x00A5EF, 0x7B7B00, 0xFFFF5A,
 0x000052, 0x00A5EF, 0x7B7B00, 0xFFFF5A,
 0x000052, 0x00A5EF, 0x7B7B00, 0xFFFF5A,
-// 7 1-H Pokemon Red
+// 7 1-H Pokemon Red / Donkey Kong / Donkey Kong Land
 0xFFEFE7, 0xFFBD8C, 0x844200, 0x311800,
 0xFFEFE7, 0xFFBD8C, 0x844200, 0x311800,
 0xFFEFE7, 0xFFBD8C, 0x844200, 0x311800,
-// 8 2-A (Kaeru no Tamei)
+// 8 2-A (Kaeru no Tamei) 
 0xF7CEA5, 0xC68C4A, 0x297B00, 0x000000,
 0xF7CEA5, 0xC68C4A, 0x297B00, 0x000000,
 0xF7CEA5, 0xC68C4A, 0x297B00, 0x000000,
@@ -92,7 +92,7 @@ const uint32_t default32sgb_palettes[] = {
 0xF7FFBD, 0xE7AD7B, 0x08CE00, 0x000000,
 0xF7FFBD, 0xE7AD7B, 0x08CE00, 0x000000,
 0xF7FFBD, 0xE7AD7B, 0x08CE00, 0x000000,
-// 20 3-E (Game Boy Wars)
+// 20 3-E (Game Boy Wars) 
 0xFFFFC6, 0xE7B56B, 0xB57B21, 0x524A73,
 0xFFFFC6, 0xE7B56B, 0xB57B21, 0x524A73,
 0xFFFFC6, 0xE7B56B, 0xB57B21, 0x524A73,
@@ -104,11 +104,11 @@ const uint32_t default32sgb_palettes[] = {
 0x63DE52, 0xFFFFFF, 0xCE3139, 0x390000,
 0x63DE52, 0xFFFFFF, 0xCE3139, 0x390000,
 0x63DE52, 0xFFFFFF, 0xCE3139, 0x390000,
-// 23 3-H (Golf)
+// 23 3-H (Golf) 
 0xE7FFA5, 0x7BCE39, 0x4A8C18, 0x081800,
 0xE7FFA5, 0x7BCE39, 0x4A8C18, 0x081800,
 0xE7FFA5, 0x7BCE39, 0x4A8C18, 0x081800,
-// 24 4-A (Qix)
+// 24 4-A (Qix) 
 0xF7AD6B, 0x7BADFF, 0xD600D6, 0x00007B,
 0xF7AD6B, 0x7BADFF, 0xD600D6, 0x00007B,
 0xF7AD6B, 0x7BADFF, 0xD600D6, 0x00007B,
@@ -120,7 +120,7 @@ const uint32_t default32sgb_palettes[] = {
 0xFFE7E7, 0xDEA5D6, 0x9CA5E7, 0x080000,
 0xFFE7E7, 0xDEA5D6, 0x9CA5E7, 0x080000,
 0xFFE7E7, 0xDEA5D6, 0x9CA5E7, 0x080000,
-// 27 4-D (X)
+// 27 4-D (X) 
 0xFFFFBD, 0x94CECE, 0x4A6B7B, 0x08214A,
 0xFFFFBD, 0x94CECE, 0x4A6B7B, 0x08214A,
 0xFFFFBD, 0x94CECE, 0x4A6B7B, 0x08214A,
@@ -128,7 +128,7 @@ const uint32_t default32sgb_palettes[] = {
 0xFFDEAD, 0xE7AD7B, 0x7B5A8C, 0x002131,
 0xFFDEAD, 0xE7AD7B, 0x7B5A8C, 0x002131,
 0xFFDEAD, 0xE7AD7B, 0x7B5A8C, 0x002131,
-// 29 4-F (F-1 Race)
+// 29 4-F (F-1 Race) 
 0xBDD6D6, 0xDE84DE, 0x8400A5, 0x390000,
 0xBDD6D6, 0xDE84DE, 0x8400A5, 0x390000,
 0xBDD6D6, 0xDE84DE, 0x8400A5, 0x390000,
@@ -162,7 +162,7 @@ const uint32_t default32sgb_palettes[] = {
 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000,
 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000,
 0xFFFFFF, 0x63A5FF, 0x0000FF, 0x000000,
-// 37 Star wars: Super return of the jedi
+// 37 Star wars: Super return of the jedi / boy and his blob
 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000,
 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000,
 0xFFFFFF, 0x7BFF31, 0x008400, 0x000000,
@@ -170,9 +170,121 @@ const uint32_t default32sgb_palettes[] = {
 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000,
 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000,
 0xFFFFFF, 0xFFAD63, 0x843100, 0x000000,
-// 39 Pocket Bomberman
+// 39 Pocket Bomberman  / donkey kong land 2/3
 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000,
 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000,
 0xFFC542, 0xFFD600, 0x943A00, 0x4A0000,
 };
 
+
+struct sgb_palette_index {
+	const uint8_t BALLOON_KID;
+	const uint8_t WARIO_LAND;
+	const uint8_t KIRBYS_PINBALL_LAND;
+	const uint8_t YOSHIS_COOKIE;
+	const uint8_t YOSHI_NO_COOKI;
+	const uint8_t ZELDA_LINKS_AWAKENING;
+	const uint8_t SUPER_MARIO_LAND;
+	const uint8_t SOLAR_STRIKER;
+	const uint8_t SPACE_INVADERS;
+	const uint8_t POKEMON_RED;
+	const uint8_t DONKEY_KONG;
+	const uint8_t DONKEY_KONG_LAND_1;
+	const uint8_t KAERU_NO_TAMEI;
+	const uint8_t DRAGON_WARRIOR_I_AND_II;
+	const uint8_t HOSINO_KIRBI_BI;
+	const uint8_t KIRBYS_DREAM_LAND;
+	const uint8_t YOSHI;
+	const uint8_t MARIO_AND_YOSHI;
+	const uint8_t YOSHI_NO_TAMAGO;
+	const uint8_t POKEMON_BLUE;
+	const uint8_t POWER_QUEST;
+	const uint8_t KID_ICARUS;
+	const uint8_t BASEBALL;
+	const uint8_t TETRIS;
+	const uint8_t DR_MARIO;
+	const uint8_t YAKYUMAN;
+	const uint8_t SUPER_MARIO_LAND_2;
+	const uint8_t GAMEBOY_WARS;
+	const uint8_t ALLEYWAY;
+	const uint8_t TENNIS;
+	const uint8_t GOLF;
+	const uint8_t QIX;
+	const uint8_t X;
+	const uint8_t F1_RACE;
+	const uint8_t NETRIOD_II_RETURN_OF_SAMUS;
+	const uint8_t FINAL_FANTASY_LEGENDS_1;
+	const uint8_t FINAL_FANTASY_LEGENDS_2;
+	const uint8_t POKEMON_YELLOW;
+	const uint8_t ARCADE_CLASSIC_NO_1;
+	const uint8_t ARCADE_CLASSIC_NO_2;
+	const uint8_t JAMES_BOND_007;
+	const uint8_t MYSTIC_QUEST;
+	const uint8_t GAME_AND_WATCH_GALLERY;
+	const uint8_t KEN_GRIFFY_JR_BASEBALL;
+	const uint8_t BATTLEZONE;
+	const uint8_t MEGA_MAN_1;
+	const uint8_t MEGA_MAN_2;
+	const uint8_t MEGA_MAN_3;
+	const uint8_t A_BOY_AND_HIS_BLOB;
+	const uint8_t STARWARS_SUPER_RETURN_OF_THE_JEDI;
+	const uint8_t GAMEBOY_GALLERY;
+	const uint8_t POCKET_BOMBERMAN;
+	const uint8_t DONKEY_KONG_LAND_2;
+	const uint8_t DONKEY_KONG_LAND_3;
+} SGB_PALETTE = {
+    .BALLOON_KID = 0,
+    .WARIO_LAND = 1,
+    .KIRBYS_PINBALL_LAND = 2,
+    .YOSHIS_COOKIE = 3,
+    .YOSHI_NO_COOKI = 3,
+    .ZELDA_LINKS_AWAKENING = 4,
+    .SUPER_MARIO_LAND = 5,
+    .SOLAR_STRIKER = 6,
+    .SPACE_INVADERS = 6,
+    .POKEMON_RED = 7,
+    .DONKEY_KONG = 7,
+    .DONKEY_KONG_LAND_1 = 7,
+    .KAERU_NO_TAMEI = 8,
+    .DRAGON_WARRIOR_I_AND_II = 9,
+    .HOSINO_KIRBI_BI = 10,
+    .KIRBYS_DREAM_LAND = 10,
+    .YOSHI = 11,
+    .MARIO_AND_YOSHI = 11,
+    .YOSHI_NO_TAMAGO = 11,
+    .POKEMON_BLUE = 12,
+    .POWER_QUEST = 12,
+    .KID_ICARUS = 13,
+    .BASEBALL = 14,
+    .TETRIS = 16,
+    .DR_MARIO = 17,
+    .YAKYUMAN = 18,
+    .SUPER_MARIO_LAND_2 = 19,
+    .GAMEBOY_WARS = 20,
+    .ALLEYWAY = 21,
+    .TENNIS = 22,
+    .GOLF = 23,
+    .QIX = 24,
+    .X = 27,
+    .F1_RACE = 29,
+    .NETRIOD_II_RETURN_OF_SAMUS = 30,
+    .FINAL_FANTASY_LEGENDS_1 = 32,
+    .FINAL_FANTASY_LEGENDS_2 = 32,
+    .POKEMON_YELLOW = 33,
+    .ARCADE_CLASSIC_NO_1 = 34,
+    .ARCADE_CLASSIC_NO_2 = 34,
+    .JAMES_BOND_007 = 34,
+    .MYSTIC_QUEST = 34,
+    .GAME_AND_WATCH_GALLERY = 34,
+    .KEN_GRIFFY_JR_BASEBALL = 34,
+    .BATTLEZONE = 35,
+    .MEGA_MAN_1 = 36,
+    .MEGA_MAN_2 = 36,
+    .MEGA_MAN_3 = 36,
+    .A_BOY_AND_HIS_BLOB = 37,
+    .STARWARS_SUPER_RETURN_OF_THE_JEDI = 27,
+    .GAMEBOY_GALLERY = 38,
+    .POCKET_BOMBERMAN = 39,
+    .DONKEY_KONG_LAND_2 = 39,
+    .DONKEY_KONG_LAND_3 = 39
+};
