@@ -335,14 +335,14 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 	/* Pokemon Blue Star */
 	case 0xD8:
 	{
-		sgb_palette_to_rgb555(12, priv->selected_palette); // Use SGB Palette 12
+		sgb_palette_to_rgb555(SGB_PALETTE.POKEMON_BLUE, priv->selected_palette);
 		break;
 	}
 
 	/* Pokemon Red */
 	case 0x14:
 	{
-		sgb_palette_to_rgb555(7, priv->selected_palette); // Use SGB Palette 7
+		sgb_palette_to_rgb555(SGB_PALETTE.POKEMON_RED, priv->selected_palette); 
 		break;
 	}
 
@@ -368,21 +368,16 @@ void auto_assign_palette(struct priv_t *priv, uint8_t game_checksum)
 	case 0x6A:
 	case 0x4B:
 	case 0x6B:
+	case 0x86:
 	{
-		const uint16_t palette[3][4] =
-		{
-			{ 0x7F08, 0x7F40, 0x48E0, 0x2400 }, /* OBJ0 */
-			{ 0x7FFF, 0x2EFF, 0x7C00, 0x001F }, /* OBJ1 */
-			{ 0x7FFF, 0x463B, 0x2951, 0x0000 }  /* BG */
-		};
-		memcpy(priv->selected_palette, palette, palette_bytes);
+		sgb_palette_to_rgb555(SGB_PALETTE.DONKEY_KONG_LAND_1, priv->selected_palette); 
 		break;
 	}
 
 	/* Link's Awakening */
 	case 0x70:
-	{
-		sgb_palette_to_rgb555(4, priv->selected_palette); // Use SGB Palette 4
+	{				
+		sgb_palette_to_rgb555(SGB_PALETTE.ZELDA_LINKS_AWAKENING, priv->selected_palette);
 		break;
 	}
 
