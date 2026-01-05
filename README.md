@@ -14,6 +14,7 @@ It includes all DMG updates from its main branch as well as the CGB support fork
 - Allows different palettes on background and sprites
 - Frame skip and interlacing modes (useful for slow LCDs or MCUs)
 - Simple to use and comes with examples
+- [Super Gameboy and Gameboy Color](https://github.com/Mr-PauI/Walnut-CGB/tree/master#additional-resources) 24-bit RGB color databases
 - LCD and sound can be disabled at compile time.
 - If sound is enabled, an external audio processing unit (APU) library is
   required.
@@ -229,7 +230,7 @@ For developers interested in implementing automatic color matching, I’ve inclu
 - **Super Game Boy Palettes** – Indexed 24-bit RGB888 format, includes approximations of official and community-sourced palettes. Found in [`extras/sgb.h`](https://github.com/Mr-PauI/Walnut-CGB/blob/master/extras/sgb.h)
 - **Game Boy Color Palettes** – Indexed 24-bit RGB888 format, aproximation of official palettes only. Found in [`extras/cgb.h`](https://github.com/Mr-PauI/Walnut-CGB/blob/master/extras/cgb.h)
 
-These arrays can be used directly in your projects for accurate color reproduction.
+These arrays can be used directly in your projects for accurate color reproduction. See the wiki for [implementation details](https://github.com/Mr-PauI/Walnut-CGB/wiki/Using-the-color-databases).
 
 ![Super Gameboy Palette Resource](https://github.com/Mr-PauI/Walnut-CGB/blob/master/screencaps/sgb_example.png)  
 *Example of sgb.h palettes matched with popular titles*
