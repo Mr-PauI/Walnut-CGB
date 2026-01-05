@@ -5,16 +5,15 @@ It includes all DMG updates from its main branch as well as the CGB support fork
 
 ## Features
 
-- Game Boy (DMG) Support
-- Game Boy Color (CGB) Support
+- Game Boy (DMG) & Game Boy Color (CGB) Support
 - MBC1, MBC2, MBC3, MBC30 and MBC5 support
 - Real Time Clock (RTC) support
 - Serial connection support
 - Can be used with or without a bootrom
-- Allows different palettes on background and sprites
-- Frame skip and interlacing modes (useful for slow LCDs or MCUs)
-- Simple to use and comes with examples
+- Allows different palettes on background and sprites (3 layers x 4 shades = 12 colors)
+- Simple to use and comes with examples for Arduino and SDL
 - [Super Gameboy and Gameboy Color](https://github.com/Mr-PauI/Walnut-CGB/tree/master#additional-resources) 24-bit RGB color databases
+- Frame skip and interlacing modes (useful for slow LCDs or MCUs)
 - LCD and sound can be disabled at compile time.
 - If sound is enabled, an external audio processing unit (APU) library is
   required.
