@@ -1,7 +1,9 @@
 Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of the more portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB).
 This is a full reimplementation of the core to support native 16-bit and 32-bit operations, processing instructions with a [dual-fetch chained architecture](https://github.com/Mr-PauI/Walnut-CGB/wiki/CPU-opcode-dispatch-model). A significant deviation from the Peanut-GB cpu opcode dispatch model. See [Migrating from Peanut-GB](https://github.com/Mr-PauI/Walnut-CGB/wiki/Migrating-from-Peanut%E2%80%90GB) for details for porting existing implementations.
 
-It includes all DMG updates from its main branch as well as the CGB support fork integrated into it.
+<img width="128" height="128" alt="WalnutCGB" src="https://github.com/user-attachments/assets/77e4290b-858b-4f64-bf6a-69d56f76c8e1" />   
+
+It includes all DMG updates from its main branch as well as the CGB support fork integrated into it. Additional bugs have been fixed and, when appropriate, have been submitted as patches upstream to the Peanut-GB project.
 
 ## Features
 
