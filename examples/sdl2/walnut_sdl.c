@@ -1,8 +1,14 @@
-﻿/**
+/*
+ * Walnut-CGB additions
+ * Copyright (c) 2025 Mr. Paul (https://github.com/Mr-PauI)
+ * Adapted from Peanut-GB SDL2 Example, license preserved below for attribution
+ *
+ * Licensed under the MIT License.
+ * --------------------------------------------------------------------------
  * MIT License
  * Copyright (c) 2018-2023 Mahyar Koshkouei
  *
- * An example of using the Walnut_gb.h library. This example application uses
+ * An example of using the Walnut_cgb.h library. This example application uses
  * SDL2 to draw the screen and get input.
  */
 
@@ -19,7 +25,7 @@
 
 uint8_t audio_read(uint16_t addr);
 void audio_write(uint16_t addr, uint8_t val);
-
+// IMPORTANT: Must disable 16-bit and 32-bit DMA modes for SDL2 demo
 #include "../../walnut_cgb.h"
 #include "../../extras/sgb.h"
 
