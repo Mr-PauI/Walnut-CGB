@@ -3,7 +3,7 @@ This is a full reimplementation of the core to support native 16-bit and 32-bit 
 
 <img width="128" height="128" alt="WalnutCGB" src="https://github.com/user-attachments/assets/77e4290b-858b-4f64-bf6a-69d56f76c8e1" />   
 
-It includes all DMG updates from its main branch as well as the CGB support fork integrated into it. Additional bugs have been fixed and, when appropriate, have been submitted as patches upstream to the Peanut-GB project.
+It includes all DMG updates from its main branch as well as the CGB support fork integrated into it. Additional bugs have been fixed and, when appropriate, have been submitted upstream to the Peanut-GB project in the [upstream-changes](https://github.com/Mr-PauI/Walnut-CGB/tree/upstream-changes) branch.
 
 ## Features
 
