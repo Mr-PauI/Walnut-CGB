@@ -108,6 +108,8 @@ In no particular order, and a non-exhaustive list, the following projects use Pe
 * [CPBoy](https://github.com/diddyholz/CPBoy) - A Game Boy emulator for the Classpad II (fx-CP400).
 * [PlayGB](https://github.com/risolvipro/PlayGB) - A Game Boy emulator for Playdate.
 * [AcolyteHandPICd32](https://github.com/stevenchadburrow/AcolyteHandPICd32) - Game Boy emulation on the PIC32MZ2048EFH144 32-bit 150MHz microcontroller.
+* [PicoPeanutGB](https://github.com/fhoedemakers/pico-peanutGB) - A Game Boy and Game Boy Color emulator for RP2350-based microcontrollers.
+* [retroJam](https://github.com/fhoedemakers/retroJam/) - A multi retro console emulator for the Adafruit Fruit Jam.
 
 ## Getting Started
 
