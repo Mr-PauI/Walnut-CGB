@@ -484,7 +484,7 @@ static inline uint16_t bgr555_to_rgb565BE_accurate(uint16_t c)
 
 	g = (g << 1) | (g >> 4);                // 5 → 6-bit expansion
 
-	uint16_t tempRGB565= (r << 11) | (g << 5) | b
+	uint16_t tempRGB565 = (r << 11) | (g << 5) | b;
     	return (tempRGB565 << 8) | (tempRGB565 >> 8); // swap bytes
 }
 
