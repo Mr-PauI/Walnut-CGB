@@ -478,17 +478,25 @@ void __gb_step_cpu_x(struct gb_s *gb);
 
 static inline uint16_t bgr555_to_rgb565BE_accurate(uint16_t c)
 {
-		int tempRGB565=((c & 0x7C00) >> 10) |                             // blue → red
-           (((c & 0x03E0) << 1) | ((c & 0x03E0) >> 4)) |      // 5→6-bit green expansion
-           ((c & 0x001F) << 11);
-    return (tempRGB565 << 8) | (tempRGB565 >> 8); // red → blue
+	uint16_t r = c & 0x001F;        // bits 4–0
+	uint16_t g = (c >> 5) & 0x001F;        // bits 9–5
+	uint16_t b = (c >> 10) & 0x001F;        // bits 14–10
+
+	g = (g << 1) | (g >> 4);                // 5 → 6-bit expansion
+
+	uint16_t tempRGB565= (r << 11) | (g << 5) | b
+    	return (tempRGB565 << 8) | (tempRGB565 >> 8); // swap bytes
 }
 
 static inline uint16_t bgr555_to_rgb565_accurate(uint16_t c)
 {
-    return ((c & 0x7C00) >> 10) |                             // blue → red
-           (((c & 0x03E0) << 1) | ((c & 0x03E0) >> 4)) |      // 5→6-bit green expansion
-           ((c & 0x001F) << 11);                              // red → blue
+	uint16_t r = c & 0x001F;        // bits 4–0
+	uint16_t g = (c >> 5) & 0x001F;        // bits 9–5
+	uint16_t b = (c >> 10) & 0x001F;        // bits 14–10
+
+	g = (g << 1) | (g >> 4);                // 5 → 6-bit expansion
+
+	return (r << 11) | (g << 5) | b;
 }
 
 static inline uint16_t bgr555_to_rgb565_fast(uint16_t c)
@@ -9902,6 +9910,7 @@ void __gb_step_cpu_x(struct gb_s *gb)
 #undef WGB_GET_ARITH
 #undef WGB_GET_ZERO
 #endif //WALNUT_GB_H
+
 
 
 
