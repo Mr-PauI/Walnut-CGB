@@ -110,6 +110,7 @@ In no particular order, and a non-exhaustive list, the following projects use Pe
 * [AcolyteHandPICd32](https://github.com/stevenchadburrow/AcolyteHandPICd32) - Game Boy emulation on the PIC32MZ2048EFH144 32-bit 150MHz microcontroller.
 * [PicoPeanutGB](https://github.com/fhoedemakers/pico-peanutGB) - A Game Boy and Game Boy Color emulator for RP2350-based microcontrollers.
 * [retroJam](https://github.com/fhoedemakers/retroJam/) - A multi retro console emulator for the Adafruit Fruit Jam.
+* [3DGB](https://github.com/SuckDuck/3dgb) - A 3D-rendered Game Boy emulator for Nintendo 3DS that uses Peanut-GB as its emulation core.
 
 ## Getting Started
 
