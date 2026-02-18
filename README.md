@@ -106,7 +106,7 @@ between 60 FPS and 30 FPS.
 Pressing 'b' will dump each frame as a 24-bit bitmap file in the current
 folder. See /screencaps/README.md for more information.
 
-Documentation of function prototypes can be found at the bottom of [walnut_gb.h](walnut_gb.h).
+The most common functions are summarized below; further documentation of function prototypes can be found at the bottom of [walnut_cgb.h](walnut_cgb.h) and in the [wiki](https://github.com/Mr-PauI/Walnut-CGB/wiki).
 
 ### Required Functions
 
