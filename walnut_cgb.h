@@ -922,7 +922,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
             if (gb->hram_io[IO_BOOT] == 0 && addr < 0x0100)
                 return (uint16_t)gb->gb_bootrom_read(gb, addr)
                      | ((uint16_t)gb->gb_bootrom_read(gb, addr + 1) << 8);
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
             else if (gb->cgb.cgbMode && gb->hram_io[IO_BOOT] == 0 && addr >= 0x0200 && addr < 0x0900)
                 return (uint16_t)gb->gb_bootrom_read(gb, addr)
                      | ((uint16_t)gb->gb_bootrom_read(gb, addr + 1) << 8);
@@ -948,7 +948,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
         case 0x9:
         {
             uint8_t *vram_base =
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
                 &gb->vram[addr - gb->cgb.vramBankOffset];
 #else
                 &gb->vram[addr - VRAM_ADDR];
@@ -989,7 +989,7 @@ uint16_t __gb_read16(struct gb_s *gb, uint16_t addr)
         case 0xD:
         {
             uint8_t *wram_ptr =
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
                 (gb->cgb.cgbMode && addr >= WRAM_1_ADDR)
                     ? &gb->wram[addr - gb->cgb.wramBankOffset]
                     : &gb->wram[addr - WRAM_0_ADDR];
@@ -1202,7 +1202,7 @@ uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
                      | ((uint32_t)gb->gb_bootrom_read(gb, addr + 1) << 8)
                      | ((uint32_t)gb->gb_bootrom_read(gb, addr + 2) << 16)
                      | ((uint32_t)gb->gb_bootrom_read(gb, addr + 3) << 24);
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
             else if (gb->cgb.cgbMode && gb->hram_io[IO_BOOT] == 0 &&
                      addr >= 0x0200 && addr < 0x0900)
                 return (uint32_t)gb->gb_bootrom_read(gb, addr)
@@ -1230,7 +1230,7 @@ uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
         case 0x8:
         case 0x9:
         {
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
             uint8_t *p = &gb->vram[addr - gb->cgb.vramBankOffset];
 #else
             uint8_t *p = &gb->vram[addr - VRAM_ADDR];
@@ -1286,7 +1286,7 @@ uint32_t __gb_read32(struct gb_s *gb, uint16_t addr)
         case 0xC:
         case 0xD:
         {
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
             if (gb->cgb.cgbMode && addr >= WRAM_1_ADDR)
             {
                 uint8_t *p = &gb->wram[addr - gb->cgb.wramBankOffset];
@@ -2269,7 +2269,7 @@ void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
     switch (WALNUT_GB_GET_MSN16(addr)) {
         case 0x8: // VRAM
         case 0x9:
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
             dst = &gb->vram[addr - gb->cgb.vramBankOffset];
 #else
             dst = &gb->vram[addr - VRAM_ADDR];
@@ -2278,7 +2278,7 @@ void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
 
         case 0xC: // WRAM bank 0
         case 0xD:
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
             dst = &gb->wram[addr - gb->cgb.wramBankOffset];
 #else
             dst = &gb->wram[addr - WRAM_1_ADDR + WRAM_BANK_SIZE];
@@ -2291,7 +2291,7 @@ void __gb_write32(struct gb_s *gb, uint16_t addr, uint32_t val) {
 
         case 0xF: // HRAM / OAM
             if (addr < OAM_ADDR) {
-#if PEANUT_FULL_GBC_SUPPORT
+#if WALNUT_FULL_GBC_SUPPORT
                 dst = &gb->wram[(addr - 0x2000) - gb->cgb.wramBankOffset];
 #else
                 dst = &gb->wram[addr - ECHO_ADDR];
