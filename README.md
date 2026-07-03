@@ -8,7 +8,7 @@ It includes all DMG updates from its main branch as well as the CGB support fork
 ## Features
 
 - Game Boy (DMG) & Game Boy Color (CGB) Support
-- MBC1, MBC2, MBC3, MBC30 and MBC5 support
+- MBC1, MBC2, MBC3, [MBC30](https://gbdev.io/pandocs/MBC3.html#mbc30) and MBC5 support
 - Real Time Clock (RTC) support
 - Serial connection support
 - Can be used with or without a bootrom
