@@ -3,7 +3,9 @@ This is a full reimplementation of the core to support native 16-bit and 32-bit 
 
 <img width="128" height="128" alt="WalnutCGB" src="https://github.com/user-attachments/assets/77e4290b-858b-4f64-bf6a-69d56f76c8e1" />   
 
-It includes all DMG updates from its main branch as well as the CGB support fork integrated into it. Additional bugs have been fixed and, when appropriate, have been submitted upstream to the Peanut-GB project in the [upstream-changes](https://github.com/Mr-PauI/Walnut-CGB/tree/upstream-changes) branch. The [experimental branch](https://github.com/Mr-PauI/Walnut-CGB/tree/experimental) currently includes MBC7 support, a proposed audio synchronization framework, and improved LCD accuracy based on peterk268's contribution.
+It includes all DMG updates from its main branch as well as the CGB support fork integrated into it. Additional bugs have been fixed and, when appropriate, have been submitted upstream to the Peanut-GB project in the [upstream-changes](https://github.com/Mr-PauI/Walnut-CGB/tree/upstream-changes) branch. 
+
+The [experimental branch](https://github.com/Mr-PauI/Walnut-CGB/tree/experimental) currently includes MBC7 support, a proposed audio accuracy framework, and improved LCD accuracy based on peterk268's contribution.
 
 **Warning:** The experimental branch is actively changing as features are tested and refined. It may introduce API, behavioral, or compatibility changes without notice. If you are using this branch in an existing project, back up your current copy of the library before updating.
 
