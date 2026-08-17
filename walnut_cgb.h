@@ -1,6 +1,6 @@
 /*
  * Walnut-CGB additions
- * Copyright (c) 2025 Mr. Paul (https://github.com/Mr-PauI)
+ * Copyright (c) 2025-2026 Mr. Paul (https://github.com/Mr-PauI)
  *
  * Licensed under the MIT License.
  *
