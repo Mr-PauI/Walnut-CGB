@@ -1,9 +1,11 @@
-Walnut-CGB is a single file header Game Boy/Gameboy Color emulator library based off of the more portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB).
+Walnut-CGB is a single file header Game Boy/Game Boy Color emulator library based off of the more portable [Peanut-GB](https://github.com/deltabeard/Peanut-GB).
 This is a full reimplementation of the core to support native 16-bit and 32-bit operations, processing instructions with a [dual-fetch chained architecture](https://github.com/Mr-PauI/Walnut-CGB/wiki/CPU-opcode-dispatch-model). A significant deviation from the Peanut-GB cpu opcode dispatch model. See [Migrating from Peanut-GB](https://github.com/Mr-PauI/Walnut-CGB/wiki/Migrating-from-Peanut%E2%80%90GB) for details for porting existing implementations.
 
 <img width="128" height="128" alt="WalnutCGB" src="https://github.com/user-attachments/assets/77e4290b-858b-4f64-bf6a-69d56f76c8e1" />   
 
-It includes all DMG updates from its main branch as well as the CGB support fork integrated into it. Additional bugs have been fixed and, when appropriate, have been submitted upstream to the Peanut-GB project in the [upstream-changes](https://github.com/Mr-PauI/Walnut-CGB/tree/upstream-changes) branch.
+It includes all DMG updates from its main branch as well as the CGB support fork integrated into it. Additional bugs have been fixed and, when appropriate, have been submitted upstream to the Peanut-GB project in the [upstream-changes](https://github.com/Mr-PauI/Walnut-CGB/tree/upstream-changes) branch. The [experimental branch](https://github.com/Mr-PauI/Walnut-CGB/tree/experimental) currently includes MBC7 support, a proposed audio synchronization framework, and improved LCD accuracy based on peterk268's contribution.
+
+**Warning:** The experimental branch is actively changing as features are tested and refined. It may introduce API, behavioral, or compatibility changes without notice. If you are using this branch in an existing project, back up your current copy of the library before updating.
 
 ## Features
 
@@ -14,7 +16,7 @@ It includes all DMG updates from its main branch as well as the CGB support fork
 - Can be used with or without a bootrom
 - Allows different palettes on background and sprites (3 layers x 4 shades = 12 colors)
 - Simple to use and comes with examples for Arduino and SDL
-- [Super Gameboy and Gameboy Color](https://github.com/Mr-PauI/Walnut-CGB/tree/master#additional-resources) 24-bit RGB color databases
+- [Super Game Boy and Game Boy Color](https://github.com/Mr-PauI/Walnut-CGB/tree/master#additional-resources) 24-bit RGB color databases
 - Frame skip and interlacing modes (useful for slow LCDs or MCUs)
 - LCD and sound can be disabled at compile time.
 - If sound is enabled, an external audio processing unit (APU) library is
@@ -154,9 +156,9 @@ including walnut_cgb.h. ENABLE_LCD is set to 1 by default if it was not
 previously defined. If gb_init_lcd is not called or lcd_draw_line is set to
 NULL, then LCD drawing is disabled.
 
-If running a gameboy colour(CGB) game, the pixel data sent to lcd_draw_line contains
+If running a Game Boy Color(CGB) game, the pixel data sent to lcd_draw_line contains
 indexes to the current palette. 
-If running a gameboy(DMG) game the pixel data sent to lcd_draw_line comes with both shade and layer data. The
+If running a Game Boy(DMG) game the pixel data sent to lcd_draw_line comes with both shade and layer data. The
 first two least significant bits are the shade data (black, dark, light, white).
 Bits 4 and 5 are layer data (OBJ0, OBJ1, BG), which can be used to add more
 colours to the game in the same way that the Game Boy Color does to older Game
@@ -233,7 +235,7 @@ For developers interested in implementing automatic color matching, I’ve inclu
 
 These arrays can be used directly in your projects for accurate color reproduction. See the wiki for [implementation details](https://github.com/Mr-PauI/Walnut-CGB/wiki/Using-the-color-databases).
 
-![Super Gameboy Palette Resource](https://github.com/Mr-PauI/Walnut-CGB/blob/master/screencaps/sgb_example.png)  
+![Super Game Boy Palette Resource](https://github.com/Mr-PauI/Walnut-CGB/blob/master/screencaps/sgb_example.png)  
 *Example of sgb.h palettes matched with popular titles*
 
 
