@@ -744,6 +744,8 @@ struct gb_s
 		bool lcd_blank	: 1;
 		/* Set if MBC3O cart is used. */
 		bool cart_is_mbc3O : 1;
+		/* Set if MBC5 cart with a rumble motor is used. */
+		bool cart_is_rumble : 1;
 	};
 
 	/* Cartridge information:
@@ -1770,7 +1772,7 @@ void __gb_write(struct gb_s *gb, uint_fast16_t addr, uint8_t val)
 		}
 
 		else if(gb->mbc == 5)
-			gb->cart_ram_bank = (val & 0x0F);
+			gb->cart_ram_bank = val & (gb->cart_is_rumble ? 0x07 : 0x0F);
 #if WALNUT_GB_SAFE_DUALFETCH_MBC
 		gb->prefetch_invalid=true;
 #endif
@@ -7636,7 +7638,7 @@ enum gb_init_error_e gb_init(struct gb_s *gb,
 	const uint8_t cart_ram[] =
 	{
 		0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0,
-		1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0
+		1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0
 	};
 	/* How large the ROM is in banks of 16 KiB. */
 	const uint16_t num_rom_banks_mask[] =
@@ -7703,6 +7705,10 @@ enum gb_init_error_e gb_init(struct gb_s *gb,
 	 * respectively, then select MBC3O mode. */
 	if(gb->mbc == 3)
 		gb->cart_is_mbc3O = gb->num_rom_banks_mask > 128 || gb->num_ram_banks > 4;
+
+	/* MBC5+RUMBLE carts (0x1C-0x1E) use bit 3 of the RAM bank number
+	 * for the rumble motor. */
+	gb->cart_is_rumble = gb->mbc == 5 && gb_rom_read(gb, mbc_location) >= 0x1C;
 
 	/* Note that MBC2 will appear to have no RAM banks, but it actually
 	 * always has 512 half-bytes of RAM. Hence, gb->num_ram_banks must be
