@@ -7692,8 +7692,9 @@ enum gb_init_error_e gb_init(struct gb_s *gb,
 	gb->num_ram_banks = num_ram_banks[gb_rom_read(gb, ram_size_location)];
 
 	/* If the ROM says that it support RAM, but has 0 RAM banks, then
-	 * disable RAM reads from the cartridge. */
-	if(gb->cart_ram == 0 || gb->num_ram_banks == 0)
+	 * disable RAM reads from the cartridge. MBC2 always reports 0 RAM
+	 * banks for its built-in RAM, so it is exempt. */
+	if(gb->cart_ram == 0 || (gb->num_ram_banks == 0 && gb->mbc != 2))
 	{
 		gb->cart_ram = 0;
 		gb->num_ram_banks = 0;
